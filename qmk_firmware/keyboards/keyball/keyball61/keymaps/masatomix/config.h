@@ -34,3 +34,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #define TAP_CODE_DELAY 5
+
+#define KEYBALL_CPI_DEFAULT 700 // マウス速度 (default: 700)
+#define KEYBALL_SCROLL_DIV_DEFAULT 6 // スクロール速度 (default: 6)
