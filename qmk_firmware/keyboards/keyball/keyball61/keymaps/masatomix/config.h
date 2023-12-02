@@ -45,3 +45,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #define LAYER_LED_ENABLE
+
+#define PRECISION_ENABLE // 有効化
+#define PRECISION_CPI 3  // 下げた時のCPI (1/100の値を指定。左記ならCPI 400)

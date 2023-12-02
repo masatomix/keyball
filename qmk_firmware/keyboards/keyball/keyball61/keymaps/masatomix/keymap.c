@@ -24,8 +24,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "layer_led.c"
 #endif
 
+
+#ifdef PRECISION_ENABLE
+#include "precision.c"
+#endif
+
 enum my_keyball_keycodes {
     LAY_TOG = KEYBALL_SAFE_RANGE,
+    PRC_SW,                       // Precision モードスイッチ
 };
 
 // clang-format off
@@ -39,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
   [1] = LAYOUT_universal(
-    _______  , _______    , KC_F2         , KC_F3     , KC_F4    , KC_F5    ,                           KC_F6    , KC_F7    , KC_F8     , KC_F9    , KC_F10    , KC_F11  ,
+    PRC_SW   , _______    , KC_F2         , KC_F3     , KC_F4    , KC_F5    ,                           KC_F6    , KC_F7    , KC_F8     , KC_F9    , KC_F10    , KC_F11  ,
     _______  , LCTL(KC_UP), LCTL(KC_DOWN) , KC_PGUP   , KC_UP    , LGUI(KC_ESC) ,                       _______  , KC_UP    , KC_PGUP   , _______  , KC_UP     , KC_F12  ,
    S(KC_LCTL), KC_VOLD    , KC_VOLU       , KC_LEFT   , KC_RGHT  , KC_RGHT  ,                           KC_LEFT  , _______  , KC_RGHT   , _______  , _______   , _______ ,
     _______  , KC_BTN4    , KC_BTN5       , KC_PGDN   , KC_DOWN  , KC_LEFT  , KC_LEFT  ,     _______  , KC_DOWN  , KC_DOWN  , KC_PGDN   , _______  , _______   , _______ ,
