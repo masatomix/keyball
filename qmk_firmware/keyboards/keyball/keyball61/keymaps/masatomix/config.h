@@ -48,3 +48,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define PRECISION_ENABLE // 有効化
 #define PRECISION_CPI 3  // 下げた時のCPI (1/100の値を指定。左記ならCPI 400)
+
+// #define DYNAMIC_KEYMAP_LAYER_COUNT 5
