@@ -63,9 +63,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [3] = LAYOUT_universal(
     RGB_TOG  , LAY_TOG  , _______  , _______  , _______  , _______  ,                                  _______  , _______  , _______  , _______ , KBC_SAVE , KBC_RST  ,
     _______  , RGB_HUI  , RGB_SAI  , RGB_VAI  , _______  , _______  ,                                  _______  , _______  , _______  , _______ , CPI_D100 , CPI_I100 ,
-    KC_LCTL  , RGB_HUD  , RGB_SAD  , RGB_VAD  , _______  , _______  ,                                  _______  , _______  , _______  , _______ , SCRL_DVD , SCRL_DVI ,
-    _______  , _______  , _______  , _______  , _______  , _______  , EE_CLR   ,            EE_CLR   , KC_HOME  , KC_PGDN  , KC_PGUP  , KC_END  , _______  , _______  ,
-    QK_BOOT  , _______  , KC_LEFT  , KC_DOWN  , KC_UP    , KC_RGHT  , _______  ,            _______  , KC_BSPC  , _______  , _______  , _______ , _______  , _______
+    KC_LCTL  , RGB_HUD  , RGB_SAD  , RGB_VAD  , _______  , KC_UP  ,                                  _______  , _______  , _______  , _______ , SCRL_DVD , SCRL_DVI ,
+    _______  , KC_VOLD  , KC_VOLU  , _______  , KC_LEFT  , KC_DOWN  , KC_RGHT   ,            EE_CLR   , KC_HOME  , KC_PGDN  , KC_PGUP  , KC_END  , _______  , _______  ,
+    QK_BOOT  , _______  , _______  , _______  , _______  , _______  , _______  ,            _______  , KC_BSPC  , _______  , _______  , _______ , _______  , _______
   ),
 
 //   [4] = LAYOUT_universal(
