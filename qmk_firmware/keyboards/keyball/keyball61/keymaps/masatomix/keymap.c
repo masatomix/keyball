@@ -45,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
   [1] = LAYOUT_universal(
-    _______  , _______    , KC_F2         , KC_F3    , KC_F4   , KC_F5 ,                               KC_F6  , KC_F7    , KC_F8     , KC_F9    , KC_F10    , KC_F11  ,
+    PRC_SW   , _______    , KC_F2         , KC_F3    , KC_F4   , KC_F5 ,                               KC_F6  , KC_F7    , KC_F8     , KC_F9    , KC_F10    , KC_F11  ,
     KC_F11   , LCTL(KC_UP), LCTL(KC_DOWN) , _______  , KC_UP   , _______  ,                             _______ , _______  , _______   , KC_PGUP  , KC_UP   , KC_F12  ,
    S(KC_LCTL), KC_VOLD    , KC_VOLU       , KC_DEL   , KC_RGHT , _______  ,                             KC_BSPC , KC_DOWN  , KC_UP     , KC_RGHT  , _______   , _______ ,
     _______  , LGUI(KC_ESC), _______      , _______  , KC_DOWN , KC_LEFT , KC_DOT   ,     _______  , KC_DOWN , KC_LEFT  , _______   , KC_PGDN  , _______   , _______ ,
@@ -56,8 +56,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______  , _______  , _______  , _______  , _______  , _______  ,                                  _______  , _______  , _______  , _______  , _______  , _______ ,
     _______  , _______  , KC_F2    , KC_F3    , KC_F4    , KC_F5    ,                                  KC_F6    , KC_F7    , KC_F8    , KC_F9    , KC_F10   , KC_F11  ,
     _______  , S(KC_1)  , S(KC_2)  , S(KC_3)  , S(KC_4)  , S(KC_5)  ,                                  S(KC_6)  , S(KC_7)  , S(KC_8)  , S(KC_9)  , S(KC_0) , S(KC_MINS),
-    _______  , _______  , _______  , _______  , _______  , _______  , _______  ,            _______ ,  _______  , KC_BTN4  , _______  , KC_BTN5  , _______  , _______ ,
-    _______  , _______  , _______  , _______  , KC_BTN1  , _______  , _______  ,            KC_BTN2 ,  KC_BTN3  , _______  , _______  , _______  , _______  , _______
+    _______  , _______  , _______  , _______  , _______  , _______  , _______  ,            _______ ,  KC_BTN3  , KC_BTN4  , KC_BTN5  , _______  , _______  , _______ ,
+    _______  , _______  , _______  , _______  , KC_BTN1  , _______  , _______  ,            KC_BTN1 ,  KC_BTN2  , _______  , _______  , _______  , _______  , _______
   ),
 
   [3] = LAYOUT_universal(
