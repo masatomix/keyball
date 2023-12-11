@@ -21,16 +21,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #ifdef RGBLIGHT_ENABLE
-#    define RGBLIGHT_EFFECT_BREATHING
-#    define RGBLIGHT_EFFECT_RAINBOW_MOOD
-#    define RGBLIGHT_EFFECT_RAINBOW_SWIRL
-//#    define RGBLIGHT_EFFECT_SNAKE
-#    define RGBLIGHT_EFFECT_KNIGHT
-//#    define RGBLIGHT_EFFECT_CHRISTMAS
-#    define RGBLIGHT_EFFECT_STATIC_GRADIENT
-//#    define RGBLIGHT_EFFECT_RGB_TEST
-//#    define RGBLIGHT_EFFECT_ALTERNATING
-//#    define RGBLIGHT_EFFECT_TWINKLE
+// #    define RGBLIGHT_EFFECT_BREATHING
+// #    define RGBLIGHT_EFFECT_RAINBOW_MOOD
+// #    define RGBLIGHT_EFFECT_RAINBOW_SWIRL
+// //#    define RGBLIGHT_EFFECT_SNAKE
+// #    define RGBLIGHT_EFFECT_KNIGHT
+// //#    define RGBLIGHT_EFFECT_CHRISTMAS
+// #    define RGBLIGHT_EFFECT_STATIC_GRADIENT
+// //#    define RGBLIGHT_EFFECT_RGB_TEST
+// //#    define RGBLIGHT_EFFECT_ALTERNATING
+// //#    define RGBLIGHT_EFFECT_TWINKLE
 #endif
 
 #define TAP_CODE_DELAY 5
+
+#define KEYBALL_CPI_DEFAULT 700 // マウス速度 (default: 700)
+#define KEYBALL_SCROLL_DIV_DEFAULT 6 // スクロール速度 (default: 6)
+
+
+#define POINTING_DEVICE_AUTO_MOUSE_ENABLE // 有効化
+#define AUTO_MOUSE_DEFAULT_LAYER 3 // 切り替えるマウスレイヤー番号を指定
+#define AUTO_MOUSE_TIME 500 // マウスが止まってから元のレイヤーに戻るまでの時間(ms)
+
+
+#define LAYER_LED_ENABLE
+
+#define PRECISION_ENABLE // 有効化
+#define PRECISION_CPI 3  // 下げた時のCPI (1/100の値を指定。左記ならCPI 300)
+
+#define DYNAMIC_KEYMAP_LAYER_COUNT 5
+
+#define KEYBALL_SCROLLSNAP_ENABLE 0
