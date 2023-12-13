@@ -18,4 +18,21 @@ void precision_switch(bool pressed) {
         keyball_set_cpi(latest_cpi);
     }
 }
+
+// // 押下中じゃなくて、押すたびにモードが変わるようにした
+// void precision_switch(bool pressed) {
+//     if(!pressed){
+//         return ;
+//     }
+
+//     cpi_state = !cpi_state;
+//     if(cpi_state){
+//         latest_cpi = keyball_get_cpi();
+//         keyball_set_cpi(down_cpi);
+//     } else {
+//         keyball_set_cpi(latest_cpi);
+//     }
+
+// }
+
 #endif
