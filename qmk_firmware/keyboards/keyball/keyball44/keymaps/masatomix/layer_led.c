@@ -6,7 +6,8 @@ static const uint8_t my_layer_colors[] = {234, 17,170, 85}; // ピンク、黄�
 
 static uint8_t my_latest_val = 0;
 static uint8_t my_latest_hue = 0;
-static bool    layer_led     = false;
+// static bool    layer_led     = false;
+static bool    layer_led     = true;
 
 // レイヤーごとにLED色変更
 void change_layer_led_color(uint8_t layer_no) {
@@ -14,11 +15,17 @@ void change_layer_led_color(uint8_t layer_no) {
         return;
     }
 
-    if (layer_no == 0) {
+#ifdef CONSOLE_ENABLE
+    uprintf("layer_no: %u \n", layer_no);
+    uprintf("highest_layer_no: %u \n", get_highest_layer(layer_no));
+#endif
+
+    if (get_highest_layer(layer_no) != 3) {
         my_latest_val = rgblight_get_val();
         rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 0);
     } else {
-        rgblight_sethsv(my_layer_colors[layer_no-1], rgblight_get_sat(), my_latest_val);
+        // rgblight_sethsv(my_layer_colors[layer_no-1], rgblight_get_sat(), my_latest_val);
+        rgblight_sethsv(HSV_RED);
     }
 }
 
