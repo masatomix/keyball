@@ -138,7 +138,31 @@ void pointing_device_driver_set_cpi(uint16_t cpi) {
     keyball_set_cpi(cpi);
 }
 
+static void adjust_mouse_speed(keyball_motion_t *m) {
+    int16_t movement_size = abs(m->x) + abs(m->y);
+
+    float speed_multiplier = 1.0;
+    if (movement_size > 60) {
+        speed_multiplier = 3.0;
+    } else if (movement_size > 30) {
+        speed_multiplier = 1.5;
+    } else if (movement_size > 5) {
+        speed_multiplier = 1.0;
+    } else if (movement_size > 4) {
+        speed_multiplier = 0.9;
+    } else if (movement_size > 3) {
+        speed_multiplier = 0.7;
+    } else if (movement_size > 2) {
+        speed_multiplier = 0.5;
+    } else if (movement_size > 1) {
+        speed_multiplier = 0.2;
+    }
+    m->x = clip2int8((int16_t)(m->x * speed_multiplier));
+    m->y = clip2int8((int16_t)(m->y * speed_multiplier));
+}
+
 static void motion_to_mouse_move(keyball_motion_t *m, report_mouse_t *r, bool is_left) {
+    adjust_mouse_speed(m);
 #if KEYBALL_MODEL == 61 || KEYBALL_MODEL == 39 || KEYBALL_MODEL == 147 || KEYBALL_MODEL == 44
     r->x = clip2int8(m->y);
     r->y = clip2int8(m->x);
