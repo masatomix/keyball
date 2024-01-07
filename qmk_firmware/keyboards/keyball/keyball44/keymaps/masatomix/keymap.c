@@ -68,7 +68,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [4] = LAYOUT_universal(
     S(KC_GRAVE)         , S(KC_1)  , S(KC_2)  , S(KC_3)   , S(KC_4) , S(KC_5) ,                   S(KC_6)  , S(KC_7)   , S(KC_8) , S(KC_9)  , S(KC_0)  , S(KC_MINS),
     LCTL_T(KC_GRAVE)    , KC_1     , KC_2     , KC_3      , KC_4    , KC_5    ,                   KC_6     , KC_7      , KC_8    , KC_9     , RALT_T(KC_0) , RCTL_T(KC_MINS),
-    _______  , _______  , _______  , _______  , S(KC_LBRC), KC_LBRC ,                             KC_RBRC  , S(KC_RBRC), _______ , _______  , _______  , _______ ,
+    _______  , KC_BTN4  , KC_BTN5  , _______  , S(KC_LBRC), KC_LBRC ,                             KC_RBRC  , S(KC_RBRC), _______ , _______  , _______  , _______ ,
                _______  , _______  , _______  ,  _______  , _______ ,                             _______  , _______   , _______ , _______  , _______
   ),
 };
