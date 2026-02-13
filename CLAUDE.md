@@ -2,6 +2,82 @@
 
 このファイルはClaude Code (claude.ai/code) がこのリポジトリで作業する際のガイダンスを提供します。
 
+---
+
+## ⚠️ 最重要ルール: GitFlow 厳守
+
+**すべての変更（コード、ドキュメント問わず）は以下の手順を守ること:**
+
+1. **作業開始前に必ずブランチを作成**（`/create-branch` スキルを使用）
+2. ブランチ上で作業・コミット
+3. PRを作成してマージ（ベースブランチ: `develop`）
+4. マージ後にクリーンアップ（worktree削除、リモートブランチ削除）
+
+### ブランチ命名規則
+- `feature/{issue番号}-{説明}` — 新機能、タスク対応
+- `hotfix/{説明}` — 軽微な修正、緊急対応
+
+```bash
+# ❌ 絶対禁止
+git commit  # develop/mainブランチで直接コミット
+git push origin develop
+git push origin main
+```
+
+**develop/mainブランチでの直接コミット・プッシュは禁止。必ずブランチ経由でPRを作成すること。**
+
+### worktree 構成
+
+```
+~/git/
+├── keyball/                         # developブランチ（常にdevelopを維持）
+├── keyball-feature-{issue番号}/     # featureブランチ用worktree
+└── keyball-hotfix-{説明}/           # hotfixブランチ用worktree
+```
+
+メインリポジトリ（`~/git/keyball/`）では直接作業しない。worktree内で作業・コミット・プッシュを行う。
+
+### タスク管理ワークフロー
+
+```
+[Issue作成] → [ブランチ作成(/create-branch)] → [作業・コミット] → [PR作成] → [マージ] → [クリーンアップ]
+```
+
+#### 設定ファイル
+
+`.claude/task-config.json` に設定を保存（テンプレート: `.claude/task-config.json.template`）
+
+```bash
+CONFIG_FILE=".claude/task-config.json"
+REPO=$(jq -r '.repository' "$CONFIG_FILE")
+```
+
+#### タスク着手
+
+1. **最初に `/create-branch` スキルを実行してブランチを作成**
+   - ⚠️ `git checkout -b` や `git branch` を直接使用してはならない
+   - 必ず `/create-branch` スキルを使用すること
+2. worktree 内で作業
+3. 変更をコミット・プッシュ
+4. PR作成（`Closes #番号` を含める → マージ時にIssue自動Close）
+
+```bash
+git push -u origin {ブランチ名}
+gh pr create --repo "$REPO" --title "feat: 機能説明 (#番号)" --body "Closes #番号" --base develop
+```
+
+#### クリーンアップ
+
+```bash
+cd ~/git/keyball
+git worktree remove ../keyball-feature-{issue番号}
+git branch -D feature/{issue番号}-{説明}
+git push origin --delete feature/{issue番号}-{説明}
+git pull origin develop
+```
+
+---
+
 ## プロジェクト概要
 
 QMK (Quantum Mechanical Keyboard) ファームウェアはAVR・ARMマイコン向けのオープンソースキーボードファームウェア。レイヤーキーマップシステム、マクロ、RGB照明、オーディオ、OLEDディスプレイ、ポインティングデバイスなどの機能をサポートしている。
