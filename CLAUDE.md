@@ -187,15 +187,54 @@ LAYOUTマクロはclang-formatで壊れるため、`// clang-format off` / `// c
 
 ## masatomix 自作データ
 
-### ビルドコマンド
+### ビルド環境と手順
+
+#### ディレクトリ構成
+
+```
+~/git/
+├── qmk_firmware/                    # QMK本体（upstream: qmk/qmk_firmware）
+│   └── keyboards/keyball/
+│       ├── config.h, lib/, drivers/  ← qmk_firmware 内の実ファイル（ボード定義）
+│       ├── keyball44/keymaps/masatomix/  ← シンボリックリンク → keyball_masatomix へ
+│       └── keyball61/keymaps/masatomix/  ← シンボリックリンク → keyball_masatomix へ
+│
+└── keyball_masatomix/               # 自分のリポジトリ（このリポジトリ）
+    └── qmk_firmware/keyboards/keyball/
+        ├── keyball44/keymaps/masatomix/  ← キーマップソース実体
+        └── keyball61/keymaps/masatomix/  ← キーマップソース実体
+```
+
+シンボリックリンク経由のため、`keyball_masatomix` でファイルを編集すれば `qmk_firmware` 側のビルドに自動的に反映される。
+
+#### ⚠️ ビルド時の注意
+
+- **`qmk_firmware` は `master` ブランチでビルドすること**（`develop` は最新 QMK で Keyball 非互換）
+- ファームウェア容量が **99%（残り約 258 バイト）** と限界に近い。機能追加時は注意
+- ビルド成果物（`.hex`）は `~/git/qmk_firmware/` ルートに出力される（`.gitignore` で除外済み）
+
+#### ビルド手順
 
 ```bash
-# Keyball61 masatomixキーマップ
-make keyball/keyball61:masatomix
+# 1. qmk_firmware を master ブランチに切替
+cd ~/git/qmk_firmware
+git checkout master
 
-# Keyball44 masatomixキーマップ
-make keyball/keyball44:masatomix
+# 2. ビルド
+make keyball/keyball44:masatomix    # Keyball44
+make keyball/keyball61:masatomix    # Keyball61
 
+# 3. 書き込み（キーボード接続後）
+make keyball/keyball44:masatomix:flash
+make keyball/keyball61:masatomix:flash
+
+# 4. ビルド後、必要に応じて qmk_firmware を develop に戻す
+git checkout develop
+```
+
+#### その他のビルドコマンド
+
+```bash
 # Keyball61 my_via キーマップ
 make keyball/keyball61:my_via
 
