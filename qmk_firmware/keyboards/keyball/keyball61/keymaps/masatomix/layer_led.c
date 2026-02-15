@@ -19,7 +19,12 @@ void change_layer_led_color(uint8_t layer_no) {
         rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 0);
     } else {
         // rgblight_sethsv(my_layer_colors[layer_no-1], rgblight_get_sat(), my_latest_val);
+
+#ifdef MOUSE_LED_COLOR
+        rgblight_sethsv(MOUSE_LED_COLOR);
+#else
         rgblight_sethsv(HSV_RED);
+#endif
     }
 }
 

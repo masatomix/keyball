@@ -37,21 +37,21 @@ enum my_keyball_keycodes {
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_universal(
-    // _______  , KC_1     , KC_2     , KC_3     , KC_4     , KC_5     ,                                  KC_6     , KC_7     , KC_8     , KC_9     , KC_0     , KC_MINS ,
-    _______  , _______  , _______  , _______  , _______  , _______  ,                                  _______  , _______  , _______  , _______  , _______  , _______  ,
-    KC_TAB   , KC_Q     , KC_W     , KC_E     , KC_R     , KC_T     ,                                  KC_Y     , KC_U     , KC_I     , KC_O     , KC_P     , LT(3,KC_EQL)   ,
-    LCTL_T(KC_ESC) ,KC_A, KC_S     , KC_D     , LT(4,KC_F) , KC_G   ,                                  KC_H     , KC_J     , KC_K     , KC_L     , KC_SCLN  , RCTL_T(KC_QUOT) ,
+    KC_ESC   , KC_1     , KC_2     , KC_3     , KC_4     , KC_5     ,                                  KC_6     , KC_7     , KC_8     , KC_9     , KC_0     , KC_MINS ,
+    // _______  , _______  , _______  , _______  , _______  , _______  ,                                  _______  , _______  , _______  , _______  , _______  , _______  ,
+    KC_TAB   , KC_Q     , KC_W     , KC_E     , KC_R     , KC_T     ,                                  KC_Y     , KC_U     , KC_I     , KC_O     , KC_P     , KC_EQL   ,
+    LCTL_T(KC_ESC) ,KC_A, KC_S     , LT(3,KC_D) , LT(4,KC_F) , KC_G   ,                                KC_H     , KC_J     , KC_K     , KC_L     , KC_SCLN  , RCTL_T(KC_QUOT) ,
     KC_LSFT  , KC_Z     , KC_X     , KC_C     , KC_V     , KC_B     , _______ ,             _______ ,  KC_N     , KC_M     , KC_COMM  , KC_DOT   , KC_SLSH  , RSFT_T(KC_BSLS)  ,
-    _______  , _______  , KC_LGUI  , KC_LALT  , LT(4,KC_SPC), LT(1,KC_SPC),LT(2,KC_LNG2),LT(1,KC_BSPC),LT(2,KC_ENT), LT(1,KC_LNG2),KC_RGUI , _______  ,LT(4,KC_GRAVE)   , LT(4,KC_GRAVE)
+    _______  , _______  , KC_LGUI  , KC_LALT  , LT(4,KC_SPC), LT(1,KC_SPC),LT(2,KC_LNG2),   KC_BSPC,LT(1,KC_ENT), _______  , _______  , _______  , LT(4,KC_GRAVE) , LT(4,KC_GRAVE)
   ),
 
   [1] = LAYOUT_universal(
-    // _______  , _______    , KC_F2         , KC_F3    , KC_F4   , KC_F5 ,                              KC_F6  , KC_F7    , KC_F8     , KC_F9    , KC_F10    , KC_F11  ,
-    _______  , _______  , _______  , _______  , _______  , _______  ,                                _______ , _______  , _______   , _______  , _______   , _______ ,
-    KC_F11   , LCTL(KC_UP ), LCTL(KC_DOWN), KC_PGUP  , KC_UP   , _______ ,                           _______ , _______  , KC_PSCR   , KC_PGUP  , KC_UP     , _______ ,
+    _______  , _______    , KC_F2         , KC_F3    , KC_F4   , KC_F5 ,                              KC_F6  , KC_F7    , KC_F8     , KC_F9    , KC_F10    , KC_F11  ,
+    // _______  , _______  , _______  , _______  , _______  , _______  ,                                _______ , _______  , _______   , _______  , _______   , _______ ,
+    KC_F11   , LCTL(KC_UP ), LCTL(KC_DOWN), KC_PGUP  , KC_UP   , _______ ,                           _______ , _______  , KC_PSCR   , KC_PGUP  , KC_UP     , KC_F12 ,
    S(KC_LCTL), KC_VOLD    , KC_VOLU       , KC_DEL   , KC_RGHT , LGUI(KC_ESC)       ,                KC_BSPC , KC_DOWN  , KC_UP     , KC_RGHT  , _______   , _______ ,
     _______  , KC_BTN4    , KC_BTN5       , KC_PGDN  , KC_DOWN , KC_LEFT , _______  ,     _______  , KC_DOWN , KC_LEFT  , _______   , KC_PGDN  , _______   , _______ ,
-    _______  , _______    , S(KC_LGUI)    , S(KC_LALT), _______, _______ , _______  ,      KC_DEL ,  _______ , _______  , S(KC_RGUI), _______  , S(KC_RALT), _______
+    _______  , _______    , _______    , _______, _______, _______ , _______  ,           KC_DEL   , _______ , _______  , _______   , _______  , _______   , _______
   ),
 
   [2] = LAYOUT_universal(
@@ -67,14 +67,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______  , _______  , _______  , _______  , _______  , _______  ,                                  _______  , _______  , _______  , _______  , _______ , _______ ,
     _______  , _______  , _______  , _______  , _______  , _______  ,                                  _______  , KC_BTN1  , KC_BTN3  , KC_BTN2  , _______ , _______ ,
     _______  , KC_BTN4  , KC_BTN5  , _______  , _______  , PRC_SW   , _______  ,            _______ ,  _______  , _______  , _______  , KC_BTN4  , KC_BTN5 , _______ ,
-    _______  , _______  , _______  , _______  , _______  , KC_BTN1  , KC_BTN2  ,            _______ ,  _______  , _______  , _______  , _______  , _______ , _______
+    _______  , _______  , _______  , _______  , _______  , KC_BTN1  , _______  ,            _______ ,  _______  , _______  , _______  , _______  , _______ , _______
   ),
 
   [4] = LAYOUT_universal(
     _______  , _______  , _______  , _______  , _______  , _______  ,                                   _______   , _______ , _______  , _______  , _______  , _______ ,
     _______  , S(KC_1)  , S(KC_2)  , S(KC_3)  , S(KC_4)  , S(KC_5)  ,                                   S(KC_6)   , S(KC_7) , S(KC_8)  , S(KC_9)  , S(KC_0)  , S(KC_MINS),
     LCTL_T(KC_LNG1),KC_1 ,KC_2     , KC_3     , KC_4     , KC_5 ,                                        KC_6     ,   KC_7  , KC_8     , KC_9     , KC_0     , KC_MINS,
-    _______  , _______  , _______  , S(KC_9)  , S(KC_LBRC), KC_LBRC    , _______  ,           _______ , KC_RBRC  ,S(KC_RBRC), S(KC_0 )  , _______  , _______  , _______ ,
+    _______  , _______  , _______  , _______  , S(KC_LBRC), KC_LBRC    , KC_LBRC  ,           KC_RBRC , KC_RBRC  ,S(KC_RBRC), _______  , _______  , _______  , _______ ,
     _______  , _______  , _______  , _______  , _______  , _______     , _______  ,           _______ ,  _______  , _______ , _______  , _______  , _______  , _______
   ),
 };

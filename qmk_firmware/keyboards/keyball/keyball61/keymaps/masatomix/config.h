@@ -52,3 +52,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DYNAMIC_KEYMAP_LAYER_COUNT 5
 
 #define KEYBALL_SCROLLSNAP_ENABLE 0
+
+
+// #define MOUSE_LED_COLOR HSV_TURQUOISE
+// #define MOUSE_LED_COLOR HSV_BLUE
+#define MOUSE_LED_COLOR HSV_AZURE
+
