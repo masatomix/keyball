@@ -39,9 +39,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for default (VIA)
   [0] = LAYOUT_universal(
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
-    LCTL_T(KC_ESC) ,KC_A        , KC_S     , KC_D     , LT(3,KC_F), KC_G ,                       KC_H     , KC_J     , KC_K     ,KC_L, RCMD_T(KC_SCLN) , RCTL_T(KC_QUOT),
-    KC_LSFT        ,KC_Z        , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , LT(3,KC_DOT)   , KC_SLSH         , RSFT_T(KC_BSLS),
-                    KC_LALT     , KC_LGUI  ,  MO(6), LT(1,KC_SPC),LT(2,KC_LNG2),           KC_BSPC,LT(1,KC_ENT), _______  ,  _______ , LT(6,KC_GRAVE)
+    LCTL_T(KC_ESC) , KC_A       , KC_S     , KC_D     , LT(3,KC_F), KC_G ,                       KC_H     , KC_J     , KC_K     ,KC_L, RCMD_T(KC_SCLN) , RCTL_T(KC_QUOT),
+    KC_LSFT        , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , LT(3,KC_DOT)   , KC_SLSH         , RSFT_T(KC_BSLS),
+                    KC_LALT     , KC_LGUI  , MO(6)    ,LT(1,KC_SPC),LT(2,KC_LNG2),      LT(1,KC_BSPC),LT(4,KC_ENT), _______  ,  _______ , LT(6,KC_GRAVE)
   ),
 
   [1] = LAYOUT_universal(
@@ -52,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
   [2] = LAYOUT_universal(
-    RGB_VAD  , RGB_VAI  , _______  , LGUI(KC_E)  , _______  , _______  ,                             _______  , LALT(KC_PSCR) ,KC_PSCR  , _______  , _______ , _______ ,
+    RGB_VAD  , RGB_VAI  , _______  , LGUI(KC_E)  , _______  , _______  ,                             _______  , SGUI(KC_4)    ,SGUI(KC_5), _______  , _______ , _______ ,
     RGB_SAD  , RGB_SAI  , KC_F2    , KC_F3    , KC_F4    , KC_F5    ,                             KC_F6    , KC_F7    , KC_F8    , KC_F9    , KC_F10  , KC_F11  ,
     RGB_HUD  , RGB_HUI  , KC_F1    , _______  , LAY_TOG  , RGB_TOG  ,                             CPI_D100 , CPI_I100 , SCRL_DVD , SCRL_DVI , KBC_SAVE, KC_F12  ,
                _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , KBC_RST
@@ -61,30 +61,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [3] = LAYOUT_universal(
     _______  , _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , _______ , _______ ,
     _______  , _______  , _______  , _______  , _______  , _______  ,                             _______  , KC_BTN1  , KC_BTN3  , KC_BTN2  , _______ , _______ ,
-    _______  , KC_BTN4  , KC_BTN5  , _______  , _______  , PRC_SW   ,                             _______  , KC_BTN4  , KC_BTN5  , _______  , _______  , _______ ,
+    _______  , KC_BTN4  , KC_BTN5  , _______  , _______  , PRC_SW   ,                             _______  , _______  , _______  , _______  , _______  , _______ ,
                _______  , _______  , _______  , KC_BTN1  , _______  ,                             _______  , _______  , _______  , _______  , _______
   ),
 
-//   // mac
-//   [4] = LAYOUT_universal(
-//     LALT(KC_TAB), LALT(KC_Q), LALT(KC_W)  , LALT(KC_E)  , LALT(KC_R)  , LALT(KC_T)  ,                LALT(KC_Y), LALT(KC_U)  , LALT(KC_I)  , LALT(KC_O)  , LALT(KC_P) , LALT(KC_EQL) ,
-//     LALT(KC_ESC), LALT(KC_A), LALT(KC_S)  , LALT(KC_D)  , LALT(KC_F)  , LALT(KC_G)  ,                LALT(KC_H), LALT(KC_J)  , LALT(KC_K)  , LALT(KC_L)  , LALT(KC_SCLN) , LALT(KC_QUOT) ,
-//     LALT(KC_LSFT), LALT(KC_Z), LALT(KC_X)  , LALT(KC_C)  , LALT(KC_V)  , LALT(KC_B)  ,                LALT(KC_N), LALT(KC_M)  , LALT(KC_COMM)  , LALT(KC_DOT)  , LALT(KC_SLSH) , LALT(KC_BSLS) ,
-//                _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , LALT(KC_GRAVE)
-//   ),
+  // Alt shortcuts (Enter hold)
+  [4] = LAYOUT_universal(
+    _______  , _______  , _______  , _______  , _______     , LALT(KC_T),                             _______  , _______  , _______  , _______  , _______ , _______ ,
+    _______  , _______  , _______  , _______  , _______     , _______  ,                             LALT(KC_H), LALT(KC_J), LALT(KC_K), LALT(KC_L), _______ , _______ ,
+    _______  , _______  , LALT(KC_X), LALT(KC_C), LALT(KC_V), _______  ,                             _______  , _______  , _______  , _______  , _______  , _______ ,
+               _______  , _______  , _______  , _______     , _______  ,                             _______  , _______  , _______  , _______  , _______
+  ),
 
-//   // win
-//   [5] = LAYOUT_universal(
-//     LCTL(KC_TAB)  , LCTL(KC_Q), LCTL(KC_W)  , LCTL(KC_E)  , LCTL(KC_R)  , LCTL(KC_T)  ,                LCTL(KC_Y), LCTL(KC_U)  , LCTL(KC_I)  , LCTL(KC_O)  , LCTL(KC_P) , LCTL(KC_EQL) ,
-//     LCTL(KC_ESC)  , LCTL(KC_A), LCTL(KC_S)  , LCTL(KC_D)  , LCTL(KC_F)  , LCTL(KC_G)  ,                LCTL(KC_H), LCTL(KC_J)  , LCTL(KC_K)  , LCTL(KC_L)  , LCTL(KC_SCLN) , LCTL(KC_QUOT) ,
-//     LCTL(KC_LSFT) , LCTL(KC_Z), LCTL(KC_X)  , LCTL(KC_C)  , LCTL(KC_V)  , LCTL(KC_B)  ,                LCTL(KC_N), LCTL(KC_M)  , LCTL(KC_COMM)  , LCTL(KC_DOT)  , LCTL(KC_SLSH) , LCTL(KC_BSLS) ,
-//                _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , LCTL(KC_GRAVE)
-//   ),
+  // Layer 5: unused
 
 
   [6] = LAYOUT_universal(
     S(KC_GRAVE)         , S(KC_1)  , S(KC_2)  , S(KC_3)   , S(KC_4) , S(KC_5) ,                   S(KC_6)  , S(KC_7)   , S(KC_8) , S(KC_9)  , S(KC_0)  , S(KC_MINS),
-    LCTL_T(KC_GRAVE)    , KC_1     , KC_2     , KC_3      , KC_4    , KC_5    ,                   KC_6     , KC_7      , KC_8    , KC_9     , LT(4,KC_0) , RCTL_T(KC_MINS),
+    LCTL_T(KC_GRAVE)    , KC_1     , KC_2     , KC_3      , KC_4    , KC_5    ,                   KC_6     , KC_7      , KC_8    , KC_9     , LCMD_T(KC_0) , RCTL_T(KC_MINS),
     KC_LNG1  , KC_BTN4  , KC_BTN5  , _______  , S(KC_LBRC), KC_LBRC ,                             KC_RBRC  , S(KC_RBRC), _______ , _______  , _______  , _______ ,
                _______  , _______  , _______  ,  _______  , _______ ,                             _______  , _______   , _______ , _______  , _______
   ),
