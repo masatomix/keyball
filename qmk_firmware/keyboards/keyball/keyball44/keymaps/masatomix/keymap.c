@@ -39,9 +39,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for default (VIA)
   [0] = LAYOUT_universal(
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
-    LCTL_T(KC_ESC) ,LCTL_T(KC_A), KC_S     , KC_D     , LT(3,KC_F), KC_G ,                       KC_H     , KC_J     , KC_K     ,KC_L, RCMD_T(KC_SCLN) , RCTL_T(KC_QUOT),
-    KC_LSFT        ,LSFT_T(KC_Z), KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , LT(3,KC_DOT)   , KC_SLSH         , RSFT_T(KC_BSLS),
-                    KC_LALT     , KC_LGUI  ,LT(6,KC_ESC),LT(1,KC_SPC),LT(2,KC_LNG2),      LT(1,KC_BSPC),LT(4,KC_ENT), _______  ,  _______ , LT(6,KC_GRAVE)
+    LCTL_T(KC_ESC) , KC_A       , KC_S     , KC_D     , LT(3,KC_F), KC_G ,                       KC_H     , KC_J     , KC_K     ,KC_L, RCMD_T(KC_SCLN) , RCTL_T(KC_QUOT),
+    KC_LSFT        , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , LT(3,KC_DOT)   , KC_SLSH         , RSFT_T(KC_BSLS),
+                    KC_LALT     , KC_LGUI  , MO(6)    ,LT(1,KC_SPC),LT(2,KC_LNG2),      LT(1,KC_BSPC),LT(4,KC_ENT), _______  ,  _______ , LT(6,KC_GRAVE)
   ),
 
   [1] = LAYOUT_universal(
