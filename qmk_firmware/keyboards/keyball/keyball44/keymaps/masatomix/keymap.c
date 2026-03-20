@@ -149,8 +149,16 @@ static inline bool is_win_mode(void) {
     return get_highest_layer(default_layer_state) == L_WIN_BASE;
 }
 
-// 切り替え処理
+// DF永続化: DF()キーコード押下時にEEPROMへ保存
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // DF(layer) キーコードを検出して永続化
+    if (keycode >= QK_DEF_LAYER && keycode <= QK_DEF_LAYER_MAX) {
+        if (record->event.pressed) {
+            uint8_t layer = keycode & 0x1F;
+            eeconfig_update_default_layer((layer_state_t)1 << layer);
+        }
+    }
+
     switch (keycode) {
         #ifdef LAYER_LED_ENABLE
         case LAY_TOG: toggle_layer_led(record->event.pressed); return true;
@@ -215,8 +223,15 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
+// DF永続化: 起動時にEEPROMからデフォルトレイヤーを復元
+void keyboard_post_init_user(void) {
+    if (eeconfig_is_enabled()) {
+        layer_state_t dl = eeconfig_read_default_layer();
+        if (dl) {
+            default_layer_set(dl);
+        }
+    }
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-void pointing_device_init_user(void) {
     set_auto_mouse_enable(true);
-}
 #endif
+}
