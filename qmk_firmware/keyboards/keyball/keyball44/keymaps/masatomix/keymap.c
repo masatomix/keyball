@@ -56,16 +56,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // Layer 0: Base QWERTY (Mac)
   [L_MAC_BASE] = LAYOUT_universal(
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
-    LCTL_T(KC_ESC) , KC_A       , KC_S     , KC_D     , LT(L_MOUSE,KC_F), KC_G ,                KC_H     , KC_J     , KC_K     ,KC_L, RCMD_T(KC_SCLN) , RCTL_T(KC_QUOT),
-    KC_LSFT        , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , LT(L_MOUSE,KC_DOT)   , KC_SLSH         , RSFT_T(KC_BSLS),
-                    KC_LALT     , KC_LGUI  , MO(L_MAC_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      LT(L_NAV,KC_BSPC),LT(L_ALT_MOD,KC_ENT), _______  ,  _______ , LT(L_MAC_SYM,KC_GRAVE)
+    KC_ESC         , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , RCTL_T(KC_QUOT),
+    KC_NO          , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , KC_DOT   , LT(L_MOUSE,KC_SLSH), RSFT_T(KC_BSLS),
+                    KC_NO       , KC_NO    , MO(L_MAC_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      LT(L_NAV,KC_BSPC),LT(L_ALT_MOD,KC_ENT), _______  ,  _______ , LT(L_MAC_SYM,KC_GRAVE)
   ),
 
   // Layer 1: Base QWERTY (Win) - Alt/Gui swap, RCTL_T(;), layer refs to Win layers
   [L_WIN_BASE] = LAYOUT_universal(
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
-    LCTL_T(KC_ESC) , KC_A       , KC_S     , KC_D     , LT(L_MOUSE,KC_F), KC_G ,                KC_H     , KC_J     , KC_K     ,KC_L, RCTL_T(KC_SCLN) , RCTL_T(KC_QUOT),
-    KC_LSFT        , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , LT(L_MOUSE,KC_DOT)   , KC_SLSH         , RSFT_T(KC_BSLS),
+    LCTL_T(KC_ESC) , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , RCTL_T(KC_QUOT),
+    KC_LSFT        , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , KC_DOT   , LT(L_MOUSE,KC_SLSH), RSFT_T(KC_BSLS),
                     KC_LGUI     , KC_LALT  , MO(L_WIN_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      LT(L_NAV,KC_BSPC),LT(L_ALT_MOD,KC_ENT), _______  ,  _______ , LT(L_WIN_SYM,KC_GRAVE)
   ),
 
@@ -88,8 +88,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // Layer 4: Mouse (shared)
   [L_MOUSE] = LAYOUT_universal(
     _______  , _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , _______ , _______ ,
-    _______  , _______  , _______  , _______  , _______  , _______  ,                             _______  , KC_BTN1  , KC_BTN3  , KC_BTN2  , _______ , _______ ,
-    _______  , KC_BTN4  , KC_BTN5  , _______  , _______  , PRC_SW   ,                             _______  , _______  , _______  , _______  , _______  , _______ ,
+    _______  , _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , _______ , _______ ,
+    _______  , KC_BTN4  , KC_BTN5  , _______  , _______  , PRC_SW   ,                             _______  , KC_BTN1  , KC_BTN3  , KC_BTN2  , _______  , _______ ,
                _______  , _______  , _______  , KC_BTN1  , _______  ,                             _______  , _______  , _______  , _______  , _______
   ),
 
@@ -149,8 +149,16 @@ static inline bool is_win_mode(void) {
     return get_highest_layer(default_layer_state) == L_WIN_BASE;
 }
 
-// 切り替え処理
+// DF永続化: DF()キーコード押下時にEEPROMへ保存
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // DF(layer) キーコードを検出して永続化
+    if (keycode >= QK_DEF_LAYER && keycode <= QK_DEF_LAYER_MAX) {
+        if (record->event.pressed) {
+            uint8_t layer = keycode & 0x1F;
+            eeconfig_update_default_layer((layer_state_t)1 << layer);
+        }
+    }
+
     switch (keycode) {
         #ifdef LAYER_LED_ENABLE
         case LAY_TOG: toggle_layer_led(record->event.pressed); return true;
@@ -215,8 +223,15 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
+// DF永続化: 起動時にEEPROMからデフォルトレイヤーを復元
+void keyboard_post_init_user(void) {
+    if (eeconfig_is_enabled()) {
+        layer_state_t dl = eeconfig_read_default_layer();
+        if (dl) {
+            default_layer_set(dl);
+        }
+    }
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-void pointing_device_init_user(void) {
     set_auto_mouse_enable(true);
-}
 #endif
+}
