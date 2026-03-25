@@ -56,7 +56,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // Layer 0: Base QWERTY (Mac)
   [L_MAC_BASE] = LAYOUT_universal(
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
-    LCTL_T(KC_ESC) , KC_A       , KC_S     , KC_D     , LT(L_MOUSE,KC_F), KC_G ,                KC_H     , KC_J     , KC_K     ,KC_L, RCMD_T(KC_SCLN) , RCTL_T(KC_QUOT),
+    LCTL_T(KC_ESC) , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , RCTL_T(KC_QUOT),
     KC_LSFT        , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , LT(L_MOUSE,KC_DOT)   , KC_SLSH         , RSFT_T(KC_BSLS),
                     KC_LALT     , KC_LGUI  , MO(L_MAC_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      LT(L_NAV,KC_BSPC),LT(L_ALT_MOD,KC_ENT), _______  ,  _______ , LT(L_MAC_SYM,KC_GRAVE)
   ),
@@ -64,7 +64,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // Layer 1: Base QWERTY (Win) - Alt/Gui swap, RCTL_T(;), layer refs to Win layers
   [L_WIN_BASE] = LAYOUT_universal(
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
-    LCTL_T(KC_ESC) , KC_A       , KC_S     , KC_D     , LT(L_MOUSE,KC_F), KC_G ,                KC_H     , KC_J     , KC_K     ,KC_L, RCTL_T(KC_SCLN) , RCTL_T(KC_QUOT),
+    LCTL_T(KC_ESC) , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , RCTL_T(KC_QUOT),
     KC_LSFT        , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , LT(L_MOUSE,KC_DOT)   , KC_SLSH         , RSFT_T(KC_BSLS),
                     KC_LGUI     , KC_LALT  , MO(L_WIN_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      LT(L_NAV,KC_BSPC),LT(L_ALT_MOD,KC_ENT), _______  ,  _______ , LT(L_WIN_SYM,KC_GRAVE)
   ),
