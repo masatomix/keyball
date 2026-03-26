@@ -41,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //   この時間未満で離す → タップ（例: A）、以上押し続ける → ホールド（例: GUI）。
 //   QMK デフォルト: 200ms。Miryoku もデフォルトのまま。
 //   短すぎ → ホールド誤発動、長すぎ → モディファイア反応が遅い。
-#define TAPPING_TERM 230
+#define TAPPING_TERM 250
 //
 // PERMISSIVE_HOLD: Mod-Tap キーを押している間に別キーを「押して離した」場合、
 //   TAPPING_TERM を待たず即座にホールド（Mod）扱いにする。
