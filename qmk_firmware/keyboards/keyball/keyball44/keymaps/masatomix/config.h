@@ -41,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //   この時間未満で離す → タップ（例: A）、以上押し続ける → ホールド（例: GUI）。
 //   QMK デフォルト: 200ms。Miryoku もデフォルトのまま。
 //   短すぎ → ホールド誤発動、長すぎ → モディファイア反応が遅い。
-#define TAPPING_TERM 200
+#define TAPPING_TERM 230
 //
 // PERMISSIVE_HOLD: Mod-Tap キーを押している間に別キーを「押して離した」場合、
 //   TAPPING_TERM を待たず即座にホールド（Mod）扱いにする。
@@ -54,7 +54,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //   前回タップから この時間以内に再度押す → 無条件でタップ扱い（ホールドにならない）。
 //   aaa... のキーリピートで GUI 等が暴発するのを防ぐ。
 //   0 にすると無効。
-// #define QUICK_TAP_TERM 120
+#define QUICK_TAP_TERM 120
 
 #define KEYBALL_CPI_DEFAULT 700 // マウス速度 (default: 700)
 #define KEYBALL_SCROLL_DIV_DEFAULT 6 // スクロール速度 (default: 6)
