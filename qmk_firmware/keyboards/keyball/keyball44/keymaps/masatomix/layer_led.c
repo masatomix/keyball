@@ -20,7 +20,7 @@ void change_layer_led_color(uint8_t layer_no) {
     uprintf("highest_layer_no: %u \n", get_highest_layer(layer_no));
 #endif
 
-    if (get_highest_layer(layer_no) != 3) {
+    if (get_highest_layer(layer_no) != L_MOUSE) {
         my_latest_val = rgblight_get_val();
         rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 0);
     } else {
