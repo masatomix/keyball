@@ -48,7 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //   有効 → Cmd+C 等のショートカットが素早く効く。
 //   無効 → 高速タイピング時の誤Mod発動が減る。
 //   まずは無効で始めて、ショートカットの反応が遅ければ有効化を検討。
-// #define PERMISSIVE_HOLD
+#define PERMISSIVE_HOLD
 //
 // QUICK_TAP_TERM: 同じキーを連続タップした時の保護(ms)。
 //   前回タップから この時間以内に再度押す → 無条件でタップ扱い（ホールドにならない）。
