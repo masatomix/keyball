@@ -72,7 +72,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #undef LAYER_STATE_8BIT
 #define LAYER_STATE_16BIT
-#define DYNAMIC_KEYMAP_LAYER_COUNT 8
+#define DYNAMIC_KEYMAP_LAYER_COUNT 7
 
 #define KEYBALL_SCROLLSNAP_ENABLE 0
 
