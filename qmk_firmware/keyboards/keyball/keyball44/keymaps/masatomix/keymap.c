@@ -32,8 +32,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 enum my_keyball_keycodes {
     LAY_TOG = KEYBALL_SAFE_RANGE,
     PRC_SW,                       // Precision モードスイッチ
-    MY_LAUNCH,                    // ランチャー (Mac: Alt+Esc, Win: Gui+Esc)
-    MY_RUN,                       // 実行 (Mac: Gui+R, Win: Win+R)
     MY_SS1,                       // スクショ1 (Mac: Cmd+Shift+4, Win: Alt+PrtSc)
     MY_SS2,                       // スクショ2 (Mac: Cmd+Shift+5, Win: PrtSc)
 };
@@ -46,10 +44,7 @@ enum my_keyball_keycodes {
 #define L_NAV       2  // Navigation (Mac/Win shared)
 #define L_FKEYS     3  // F-keys (Mac/Win shared)
 #define L_MOUSE     4
-#define L_ALT_MOD   5
-#define L_MAC_SYM   6
-// Win momentary layer
-#define L_WIN_SYM   7
+#define L_SYM       5  // Symbols/Numbers (Mac/Win shared)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -58,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
     KC_ESC         , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , RCTL_T(KC_QUOT),
     KC_NO          , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , KC_DOT   , LT(L_MOUSE,KC_SLSH), RSFT_T(KC_BSLS),
-                    KC_NO       , KC_NO    , MO(L_MAC_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      LT(L_NAV,KC_BSPC),LT(L_ALT_MOD,KC_ENT), _______  ,  _______ , LT(L_MAC_SYM,KC_GRAVE)
+                    KC_NO       , KC_NO    , MO(L_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , LT(L_SYM,KC_GRAVE)
   ),
 
   // Layer 1: Base QWERTY (Win) - Alt/Gui swap, RCTL_T(;), layer refs to Win layers
@@ -66,20 +61,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
     LCTL_T(KC_ESC) , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , RCTL_T(KC_QUOT),
     KC_LSFT        , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , KC_DOT   , LT(L_MOUSE,KC_SLSH), RSFT_T(KC_BSLS),
-                    KC_LGUI     , KC_LALT  , MO(L_WIN_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      LT(L_NAV,KC_BSPC),LT(L_ALT_MOD,KC_ENT), _______  ,  _______ , LT(L_WIN_SYM,KC_GRAVE)
+                    KC_LGUI     , KC_LALT  , MO(L_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , LT(L_SYM,KC_GRAVE)
   ),
 
   // Layer 2: Navigation (Mac/Win shared)
   [L_NAV] = LAYOUT_universal(
     KC_F11   , LCTL(KC_UP ), LCTL(KC_DOWN), KC_PGUP  , KC_UP   , _______ ,                        _______ , _______  , _______   , KC_PGUP  , KC_UP     , _______ ,
-   S(KC_LCTL), KC_VOLD     , KC_VOLU      , KC_DEL   , KC_RGHT , MY_LAUNCH ,                      KC_BSPC , KC_DOWN  , KC_UP     , KC_RGHT  , _______   , _______ ,
+   S(KC_LCTL), LGUI_T(KC_VOLD), LALT_T(KC_VOLU), LCTL_T(KC_DEL), LSFT_T(KC_RGHT), LALT(KC_ESC), KC_BSPC, RSFT_T(KC_DOWN), RCTL_T(KC_UP), RALT_T(KC_RGHT), _______, _______,
     _______  , KC_BTN4     , KC_BTN5      , KC_PGDN  , KC_DOWN , KC_LEFT ,                        KC_DOWN , KC_LEFT  , _______   , KC_PGDN  , _______   , _______ ,
                _______     , _______      , _______  , _______ , _______ ,                        KC_DEL  , _______  , _______   , _______  , _______
   ),
 
   // Layer 3: F-keys (Mac/Win shared) + DF switch
   [L_FKEYS] = LAYOUT_universal(
-    RGB_VAD  , RGB_VAI  , _______  , LGUI(KC_E)  , MY_RUN   , _______  ,                             _______  , MY_SS1   , MY_SS2   , _______  , DF(L_MAC_BASE)   , DF(L_WIN_BASE)   ,
+    RGB_VAD  , RGB_VAI  , _______  , _______      , _______  , _______  ,                             _______  , MY_SS1   , MY_SS2   , _______  , DF(L_MAC_BASE)   , DF(L_WIN_BASE)   ,
     RGB_SAD  , RGB_SAI  , KC_F2    , KC_F3    , KC_F4    , KC_F5    ,                             KC_F6    , KC_F7    , KC_F8    , KC_F9    , KC_F10  , KC_F11  ,
     RGB_HUD  , RGB_HUI  , KC_F1    , _______  , LAY_TOG  , RGB_TOG  ,                             CPI_D100 , CPI_I100 , SCRL_DVD , SCRL_DVI , KBC_SAVE, KC_F12  ,
                _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , KBC_RST
@@ -93,26 +88,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                _______  , _______  , _______  , KC_BTN1  , _______  ,                             _______  , _______  , _______  , _______  , _______
   ),
 
-  // Layer 5: Alt shortcuts (Enter hold) (shared)
-  [L_ALT_MOD] = LAYOUT_universal(
-    _______  , _______  , _______  , _______  , _______     , LALT(KC_T),                             _______  , _______  , _______  , _______  , _______ , _______ ,
-    _______  , _______  , _______  , _______  , _______     , _______  ,                             LALT(KC_H), LALT(KC_J), LALT(KC_K), LALT(KC_L), _______ , _______ ,
-    _______  , _______  , LALT(KC_X), LALT(KC_C), LALT(KC_V), _______  ,                             _______  , _______  , _______  , _______  , _______  , _______ ,
-               _______  , _______  , _______  , _______     , _______  ,                             _______  , _______  , _______  , _______  , _______
-  ),
-
-  // Layer 6: Symbols/Numbers (Mac)
-  [L_MAC_SYM] = LAYOUT_universal(
+  // Layer 5: Symbols/Numbers (Mac/Win shared)
+  [L_SYM] = LAYOUT_universal(
     S(KC_GRAVE)         , S(KC_1)  , S(KC_2)  , S(KC_3)   , S(KC_4) , S(KC_5) ,                   S(KC_6)  , S(KC_7)   , S(KC_8) , S(KC_9)  , S(KC_0)  , S(KC_MINS),
-    LCTL_T(KC_GRAVE)    , KC_1     , KC_2     , KC_3      , KC_4    , KC_5    ,                   KC_6     , KC_7      , KC_8    , KC_9     , LCMD_T(KC_0) , RCTL_T(KC_MINS),
-    KC_LNG1  , KC_BTN4  , KC_BTN5  , _______  , S(KC_LBRC), KC_LBRC ,                             KC_RBRC  , S(KC_RBRC), _______ , _______  , _______  , _______ ,
-               _______  , _______  , _______  ,  _______  , _______ ,                             _______  , _______   , _______ , _______  , _______
-  ),
-
-  // Layer 7: Symbols/Numbers (Win) - ; position diff
-  [L_WIN_SYM] = LAYOUT_universal(
-    S(KC_GRAVE)         , S(KC_1)  , S(KC_2)  , S(KC_3)   , S(KC_4) , S(KC_5) ,                   S(KC_6)  , S(KC_7)   , S(KC_8) , S(KC_9)  , S(KC_0)  , S(KC_MINS),
-    LCTL_T(KC_GRAVE)    , KC_1     , KC_2     , KC_3      , KC_4    , KC_5    ,                   KC_6     , KC_7      , KC_8    , KC_9     , RCTL_T(KC_0) , RCTL_T(KC_MINS),
+    LCTL_T(KC_GRAVE)    , LGUI_T(KC_1), LALT_T(KC_2), LCTL_T(KC_3), LSFT_T(KC_4), KC_5,          KC_6     , RSFT_T(KC_7), RCTL_T(KC_8), RALT_T(KC_9), RGUI_T(KC_0) , RCTL_T(KC_MINS),
     KC_LNG1  , KC_BTN4  , KC_BTN5  , _______  , S(KC_LBRC), KC_LBRC ,                             KC_RBRC  , S(KC_RBRC), _______ , _______  , _______  , _______ ,
                _______  , _______  , _______  ,  _______  , _______ ,                             _______  , _______   , _______ , _______  , _______
   ),
@@ -120,9 +99,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    // Auto enable scroll mode when the highest layer is Symbols (Mac:6 or Win:7)
-    uint8_t highest = get_highest_layer(state);
-    keyball_set_scroll_mode(highest == L_MAC_SYM || highest == L_WIN_SYM);
+    // Auto enable scroll mode when the highest layer is Symbols
+    keyball_set_scroll_mode(get_highest_layer(state) == L_SYM);
 
     #ifdef LAYER_LED_ENABLE
     change_layer_led_color(state);
@@ -166,26 +144,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #ifdef PRECISION_ENABLE
         case PRC_SW:  precision_switch(record->event.pressed); return false;
         #endif
-
-        case MY_LAUNCH:
-            if (record->event.pressed) {
-                if (is_win_mode()) {
-                    tap_code16(LGUI(KC_ESC));  // Win: Gui+Esc
-                } else {
-                    tap_code16(LALT(KC_ESC));  // Mac: Alt+Esc
-                }
-            }
-            return false;
-
-        case MY_RUN:
-            if (record->event.pressed) {
-                if (is_win_mode()) {
-                    tap_code16(LGUI(KC_R));    // Win: Win+R
-                } else {
-                    tap_code16(LGUI(KC_R));    // Mac: Cmd+R (同じキーコード)
-                }
-            }
-            return false;
 
         case MY_SS1:
             if (record->event.pressed) {
