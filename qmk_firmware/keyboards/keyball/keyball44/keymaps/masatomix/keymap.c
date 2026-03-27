@@ -32,7 +32,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 enum my_keyball_keycodes {
     LAY_TOG = KEYBALL_SAFE_RANGE,
     PRC_SW,                       // Precision モードスイッチ
-    MY_LAUNCH,                    // ランチャー (Mac: Alt+Esc, Win: Gui+Esc)
     MY_RUN,                       // 実行 (Mac: Gui+R, Win: Win+R)
     MY_SS1,                       // スクショ1 (Mac: Cmd+Shift+4, Win: Alt+PrtSc)
     MY_SS2,                       // スクショ2 (Mac: Cmd+Shift+5, Win: PrtSc)
@@ -72,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // Layer 2: Navigation (Mac/Win shared)
   [L_NAV] = LAYOUT_universal(
     KC_F11   , LCTL(KC_UP ), LCTL(KC_DOWN), KC_PGUP  , KC_UP   , _______ ,                        _______ , _______  , _______   , KC_PGUP  , KC_UP     , _______ ,
-   S(KC_LCTL), KC_VOLD     , KC_VOLU      , KC_DEL   , KC_RGHT , MY_LAUNCH ,                      KC_BSPC , KC_DOWN  , KC_UP     , KC_RGHT  , _______   , _______ ,
+   S(KC_LCTL), LGUI_T(KC_VOLD), LALT_T(KC_VOLU), LCTL_T(KC_DEL), LSFT_T(KC_RGHT), LALT(KC_ESC), KC_BSPC, RSFT_T(KC_DOWN), RCTL_T(KC_UP), RALT_T(KC_RGHT), _______, _______,
     _______  , KC_BTN4     , KC_BTN5      , KC_PGDN  , KC_DOWN , KC_LEFT ,                        KC_DOWN , KC_LEFT  , _______   , KC_PGDN  , _______   , _______ ,
                _______     , _______      , _______  , _______ , _______ ,                        KC_DEL  , _______  , _______   , _______  , _______
   ),
@@ -166,16 +165,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #ifdef PRECISION_ENABLE
         case PRC_SW:  precision_switch(record->event.pressed); return false;
         #endif
-
-        case MY_LAUNCH:
-            if (record->event.pressed) {
-                if (is_win_mode()) {
-                    tap_code16(LGUI(KC_ESC));  // Win: Gui+Esc
-                } else {
-                    tap_code16(LALT(KC_ESC));  // Mac: Alt+Esc
-                }
-            }
-            return false;
 
         case MY_RUN:
             if (record->event.pressed) {
