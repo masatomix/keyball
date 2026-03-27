@@ -20,6 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "quantum.h"
 
+// Layer number definitions
+// Base layers (must be lower than shared/momentary layers)
+#define L_MAC_BASE  0
+#define L_WIN_BASE  1
+// Shared momentary layers
+#define L_NAV       2  // Navigation (Mac/Win shared)
+#define L_FKEYS     3  // F-keys (Mac/Win shared)
+#define L_MOUSE     4
+#define L_SYM       5  // Symbols/Numbers (Mac/Win shared)
+
 #ifdef LAYER_LED_ENABLE
 #include "layer_led.c"
 #endif
@@ -35,16 +45,6 @@ enum my_keyball_keycodes {
     MY_SS1,                       // スクショ1 (Mac: Cmd+Shift+4, Win: Alt+PrtSc)
     MY_SS2,                       // スクショ2 (Mac: Cmd+Shift+5, Win: PrtSc)
 };
-
-// Layer number definitions
-// Base layers (must be lower than shared/momentary layers)
-#define L_MAC_BASE  0
-#define L_WIN_BASE  1
-// Shared momentary layers
-#define L_NAV       2  // Navigation (Mac/Win shared)
-#define L_FKEYS     3  // F-keys (Mac/Win shared)
-#define L_MOUSE     4
-#define L_SYM       5  // Symbols/Numbers (Mac/Win shared)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {

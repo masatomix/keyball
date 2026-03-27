@@ -65,7 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define AUTO_MOUSE_TIME 400 // マウスが止まってから元のレイヤーに戻るまでの時間(ms)
 
 
-// #define LAYER_LED_ENABLE  // サイズ不足のため無効化
+#define LAYER_LED_ENABLE
 
 #define PRECISION_ENABLE // 有効化
 #define PRECISION_CPI 3  // 下げた時のCPI (1/100の値を指定。左記ならCPI 300)
