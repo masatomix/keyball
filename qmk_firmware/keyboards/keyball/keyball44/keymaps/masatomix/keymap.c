@@ -32,7 +32,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 enum my_keyball_keycodes {
     LAY_TOG = KEYBALL_SAFE_RANGE,
     PRC_SW,                       // Precision モードスイッチ
-    MY_RUN,                       // 実行 (Mac: Gui+R, Win: Win+R)
     MY_SS1,                       // スクショ1 (Mac: Cmd+Shift+4, Win: Alt+PrtSc)
     MY_SS2,                       // スクショ2 (Mac: Cmd+Shift+5, Win: PrtSc)
 };
@@ -78,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   // Layer 3: F-keys (Mac/Win shared) + DF switch
   [L_FKEYS] = LAYOUT_universal(
-    RGB_VAD  , RGB_VAI  , _______  , LGUI(KC_E)  , MY_RUN   , _______  ,                             _______  , MY_SS1   , MY_SS2   , _______  , DF(L_MAC_BASE)   , DF(L_WIN_BASE)   ,
+    RGB_VAD  , RGB_VAI  , _______  , _______      , _______  , _______  ,                             _______  , MY_SS1   , MY_SS2   , _______  , DF(L_MAC_BASE)   , DF(L_WIN_BASE)   ,
     RGB_SAD  , RGB_SAI  , KC_F2    , KC_F3    , KC_F4    , KC_F5    ,                             KC_F6    , KC_F7    , KC_F8    , KC_F9    , KC_F10  , KC_F11  ,
     RGB_HUD  , RGB_HUI  , KC_F1    , _______  , LAY_TOG  , RGB_TOG  ,                             CPI_D100 , CPI_I100 , SCRL_DVD , SCRL_DVI , KBC_SAVE, KC_F12  ,
                _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , KBC_RST
@@ -165,16 +164,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #ifdef PRECISION_ENABLE
         case PRC_SW:  precision_switch(record->event.pressed); return false;
         #endif
-
-        case MY_RUN:
-            if (record->event.pressed) {
-                if (is_win_mode()) {
-                    tap_code16(LGUI(KC_R));    // Win: Win+R
-                } else {
-                    tap_code16(LGUI(KC_R));    // Mac: Cmd+R (同じキーコード)
-                }
-            }
-            return false;
 
         case MY_SS1:
             if (record->event.pressed) {
