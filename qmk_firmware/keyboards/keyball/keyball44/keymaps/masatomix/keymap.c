@@ -46,6 +46,14 @@ enum my_keyball_keycodes {
     MY_SS2,                       // スクショ2 (Mac: Cmd+Shift+5, Win: PrtSc)
 };
 
+// Tap Dance: 1タップ=LNG2(英数), ダブルタップ=LNG1(かな)
+enum {
+    TD_LNG = 0,
+};
+tap_dance_action_t tap_dance_actions[] = {
+    [TD_LNG] = ACTION_TAP_DANCE_DOUBLE(KC_LNG2, KC_LNG1),
+};
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // Layer 0: Base QWERTY (Mac)
@@ -53,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
     KC_ESC         , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , RCTL_T(KC_QUOT),
     KC_NO          , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , KC_DOT   , LT(L_MOUSE,KC_SLSH), RSFT_T(KC_BSLS),
-                    KC_NO       , KC_NO    , MO(L_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , LT(L_SYM,KC_GRAVE)
+                    KC_NO       ,TD(TD_LNG), MO(L_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , LT(L_SYM,KC_GRAVE)
   ),
 
   // Layer 1: Base QWERTY (Win) - Alt/Gui swap, RCTL_T(;), layer refs to Win layers
