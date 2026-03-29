@@ -20,19 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#ifdef RGBLIGHT_ENABLE
-// #    define RGBLIGHT_EFFECT_BREATHING
-// #    define RGBLIGHT_EFFECT_RAINBOW_MOOD
-// #    define RGBLIGHT_EFFECT_RAINBOW_SWIRL
-// //#    define RGBLIGHT_EFFECT_SNAKE
-// #    define RGBLIGHT_EFFECT_KNIGHT
-// //#    define RGBLIGHT_EFFECT_CHRISTMAS
-// #    define RGBLIGHT_EFFECT_STATIC_GRADIENT
-// //#    define RGBLIGHT_EFFECT_RGB_TEST
-// //#    define RGBLIGHT_EFFECT_ALTERNATING
-// //#    define RGBLIGHT_EFFECT_TWINKLE
-#endif
-
 #define TAP_CODE_DELAY 5
 
 // ---- Home Row Mods (GACS) 関連設定 ----
@@ -65,8 +52,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define AUTO_MOUSE_TIME 400 // マウスが止まってから元のレイヤーに戻るまでの時間(ms)
 
 
-#define LAYER_LED_ENABLE
-
 #define PRECISION_ENABLE // 有効化
 #define PRECISION_CPI 3  // 下げた時のCPI (1/100の値を指定。左記ならCPI 300)
 
@@ -77,7 +62,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define KEYBALL_SCROLLSNAP_ENABLE 0
 
 
-// #define MOUSE_LED_COLOR HSV_TURQUOISE
-// #define MOUSE_LED_COLOR HSV_BLUE
-#define MOUSE_LED_COLOR HSV_AZURE
 
