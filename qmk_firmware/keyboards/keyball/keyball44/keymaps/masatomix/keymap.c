@@ -49,6 +49,9 @@ enum {
     TD_LNG = 0,  // 1タップ=LNG2(英数), ダブルタップ=LNG1(かな)
     TD_SS1,      // 1タップ=Mac スクショ(Cmd+Shift+4), ダブルタップ=Win スクショ(Alt+PrtSc)
     TD_SS2,      // 1タップ=Mac スクショ(Cmd+Shift+5), ダブルタップ=Win スクショ(PrtSc)
+    TD_PRN,      // 1タップ=( ダブルタップ=)
+    TD_CBR,      // 1タップ={ ダブルタップ=}
+    TD_BRC,      // 1タップ=[ ダブルタップ=]
 };
 
 // Tap Dance スクショ用コールバック
@@ -72,6 +75,9 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_LNG] = ACTION_TAP_DANCE_DOUBLE(KC_LNG2, KC_LNG1),
     [TD_SS1] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ss1_finished, NULL),
     [TD_SS2] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ss2_finished, NULL),
+    [TD_PRN] = ACTION_TAP_DANCE_DOUBLE(S(KC_9), S(KC_0)),         // ( )
+    [TD_CBR] = ACTION_TAP_DANCE_DOUBLE(S(KC_LBRC), S(KC_RBRC)),   // { }
+    [TD_BRC] = ACTION_TAP_DANCE_DOUBLE(KC_LBRC, KC_RBRC),         // [ ]
 };
 
 // clang-format off
@@ -120,7 +126,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [L_SYM] = LAYOUT_universal(
     S(KC_GRAVE)         , S(KC_1)  , S(KC_2)  , S(KC_3)   , S(KC_4) , S(KC_5) ,                   S(KC_6)  , S(KC_7)   , S(KC_8) , S(KC_9)  , S(KC_0)  , S(KC_MINS),
     LCTL_T(KC_GRAVE)    , LGUI_T(KC_1), LALT_T(KC_2), LCTL_T(KC_3), LSFT_T(KC_4), KC_5,          KC_6     , RSFT_T(KC_7), RCTL_T(KC_8), RALT_T(KC_9), RGUI_T(KC_0) , RCTL_T(KC_MINS),
-    KC_LNG1  , KC_BTN4  , KC_BTN5  , _______  , S(KC_LBRC), KC_LBRC ,                             KC_RBRC  , S(KC_RBRC), _______ , _______  , _______  , _______ ,
+    KC_LNG1  , KC_BTN4  , KC_BTN5  , TD(TD_PRN), TD(TD_CBR), TD(TD_BRC),                           KC_RBRC  , S(KC_RBRC), _______ , _______  , _______  , _______ ,
                _______  , _______  , _______  ,  _______  , _______ ,                             _______  , _______   , _______ , _______  , _______
   ),
 };
