@@ -237,6 +237,17 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
+// Per-key tapping term: GUI キーは誤爆しやすいため長めに設定 (#736)
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case LGUI_T(KC_A):
+        case RGUI_T(KC_SCLN):
+            return 300;
+        default:
+            return TAPPING_TERM;
+    }
+}
+
 // DF永続化: 起動時にEEPROMからデフォルトレイヤーを復元
 void keyboard_post_init_user(void) {
     if (eeconfig_is_enabled()) {
