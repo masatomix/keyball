@@ -39,6 +39,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "precision.c"
 #endif
 
+// Combo: J+K → Esc (#738 5列移行準備)
+const uint16_t PROGMEM jk_combo[] = {RSFT_T(KC_J), RCTL_T(KC_K), COMBO_END};
+combo_t key_combos[] = {
+    COMBO(jk_combo, KC_ESC),
+};
+
 enum my_keyball_keycodes {
     LAY_TOG = KEYBALL_SAFE_RANGE,
     PRC_SW,                       // Precision モードスイッチ
