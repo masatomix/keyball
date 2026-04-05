@@ -140,6 +140,13 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     // Auto enable scroll mode when the highest layer is Symbols
     keyball_set_scroll_mode(get_highest_layer(state) == L_SYM);
 
+    // Precision CPI復元ガード: L_MOUSEを抜けたらCPIを戻す (#745)
+    #ifdef PRECISION_ENABLE
+    if (!layer_state_cmp(state, L_MOUSE)) {
+        precision_restore_cpi();
+    }
+    #endif
+
     #ifdef LAYER_LED_ENABLE
     change_layer_led_color(state);
     #endif
