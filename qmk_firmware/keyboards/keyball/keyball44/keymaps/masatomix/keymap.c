@@ -256,6 +256,17 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
+// Per-key PERMISSIVE_HOLD: Shift のみ即ホールド判定で大文字入力を高速化 (#744)
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case LSFT_T(KC_F):
+        case RSFT_T(KC_J):
+            return true;
+        default:
+            return false;
+    }
+}
+
 // DF永続化: 起動時にEEPROMからデフォルトレイヤーを復元
 void keyboard_post_init_user(void) {
     if (eeconfig_is_enabled()) {
