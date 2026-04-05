@@ -2,8 +2,6 @@
 
 #include QMK_KEYBOARD_H
 
-static const uint8_t my_layer_colors[] = {234, 17,170, 85}; // ピンク、黄、青、緑
-
 static uint8_t my_latest_val = 0;
 static uint8_t my_latest_hue = 0;
 // static bool    layer_led     = false;
@@ -24,8 +22,6 @@ void change_layer_led_color(uint8_t layer_no) {
         my_latest_val = rgblight_get_val();
         rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 0);
     } else {
-        // rgblight_sethsv(my_layer_colors[layer_no-1], rgblight_get_sat(), my_latest_val);
-
 #ifdef MOUSE_LED_COLOR
         rgblight_sethsv(MOUSE_LED_COLOR);
 #else

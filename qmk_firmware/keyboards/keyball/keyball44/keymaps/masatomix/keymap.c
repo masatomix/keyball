@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
-#include "quantum.h"
-
 // Layer number definitions
 // Base layers (must be lower than shared/momentary layers)
 #define L_MAC_BASE  0
@@ -161,11 +159,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return state;
 }
 
-
-// OS判定ヘルパー
-static inline bool is_win_mode(void) {
-    return get_highest_layer(default_layer_state) == L_WIN_BASE;
-}
 
 // DF永続化: DF()キーコード押下時にEEPROMへ保存
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
