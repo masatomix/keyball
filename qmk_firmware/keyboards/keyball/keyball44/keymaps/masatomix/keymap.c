@@ -37,10 +37,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "precision.c"
 #endif
 
-// Combo: J+K → Esc (#738 5列移行準備)
+// Combo: J+K → Esc (#738), D+F → Tab (#749) 5列移行準備
 const uint16_t PROGMEM jk_combo[] = {RSFT_T(KC_J), RCTL_T(KC_K), COMBO_END};
+const uint16_t PROGMEM df_combo[] = {LCTL_T(KC_D), LSFT_T(KC_F), COMBO_END};
 combo_t key_combos[] = {
     COMBO(jk_combo, KC_ESC),
+    COMBO(df_combo, KC_TAB),
 };
 
 enum my_keyball_keycodes {
