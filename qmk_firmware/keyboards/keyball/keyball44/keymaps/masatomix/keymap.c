@@ -247,25 +247,20 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
-// Per-key tapping term: GUI キーは誤爆しやすいため長めに設定 (#736)
+// Per-key tapping term:
+// - GUI(A/;) は誤爆しやすいため長め (#736)
+// - Shift(F/J) は大文字入力時の誤入力対策で短め (#757)
+//   ※ #744 PERMISSIVE_HOLD per-key は撤回、TAPPING_TERM 短縮で対応
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case LGUI_T(KC_A):
         case RGUI_T(KC_SCLN):
             return 300;
-        default:
-            return TAPPING_TERM;
-    }
-}
-
-// Per-key PERMISSIVE_HOLD: Shift のみ即ホールド判定で大文字入力を高速化 (#744)
-bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
         case LSFT_T(KC_F):
         case RSFT_T(KC_J):
-            return true;
+            return 150;
         default:
-            return false;
+            return TAPPING_TERM;
     }
 }
 
