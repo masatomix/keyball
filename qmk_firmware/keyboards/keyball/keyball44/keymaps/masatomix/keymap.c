@@ -258,8 +258,11 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
-// Per-key PERMISSIVE_HOLD: Shift のみ即ホールド判定で大文字入力を高速化 (#744)
-bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+// Per-key HOLD_ON_OTHER_KEY_PRESS: Shift(F/J) のみ、別キーが押された瞬間に即ホールド判定 (#756)
+// PERMISSIVE_HOLD (#744) より早く Shift が確定するため、Mod キーを先に離してしまうケースでも
+// 大文字入力 (例: F = Shift+f) が確実に発動する。
+// HOLD_ON_OTHER_KEY_PRESS は PERMISSIVE_HOLD の上位互換のため、F/J については PERMISSIVE_HOLD は不要。
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case LSFT_T(KC_F):
         case RSFT_T(KC_J):
