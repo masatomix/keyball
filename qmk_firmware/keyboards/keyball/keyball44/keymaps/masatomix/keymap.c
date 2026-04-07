@@ -280,4 +280,6 @@ void keyboard_post_init_user(void) {
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     set_auto_mouse_enable(true);
 #endif
+    // スクロールスナップのデフォルトを FREE に設定（縦横両方動くように） (#761)
+    keyball_set_scrollsnap_mode(KEYBALL_SCROLLSNAP_MODE_FREE);
 }
