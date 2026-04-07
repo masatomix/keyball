@@ -59,7 +59,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LAYER_STATE_16BIT
 #define DYNAMIC_KEYMAP_LAYER_COUNT 6
 
-#define KEYBALL_SCROLLSNAP_ENABLE 0
+#define KEYBALL_SCROLLSNAP_ENABLE 2
 
 
 
