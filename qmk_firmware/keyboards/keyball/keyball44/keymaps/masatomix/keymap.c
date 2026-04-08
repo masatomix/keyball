@@ -19,14 +19,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 
 // Layer number definitions
-// Base layers (must be lower than shared/momentary layers)
-#define L_MAC_BASE  0
-#define L_WIN_BASE  1
-// Shared momentary layers
-#define L_NAV       2  // Navigation (Mac/Win shared)
-#define L_FKEYS     3  // F-keys (Mac/Win shared)
-#define L_MOUSE     4
-#define L_SYM       5  // Symbols/Numbers (Mac/Win shared)
+#define L_BASE      0  // Base QWERTY (Mac/Win 共通)
+#define L_NAV       1  // Navigation
+#define L_FKEYS     2  // F-keys
+#define L_MOUSE     3
+#define L_SYM       4  // Symbols/Numbers
 
 #ifdef LAYER_LED_ENABLE
 #include "layer_led.c"
@@ -88,23 +85,15 @@ tap_dance_action_t tap_dance_actions[] = {
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  // Layer 0: Base QWERTY (Mac)
-  [L_MAC_BASE] = LAYOUT_universal(
+  // Layer 0: Base QWERTY (Mac/Win 共通)
+  [L_BASE] = LAYOUT_universal(
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
     KC_ESC         , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , KC_QUOT,
     KC_NO          , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , KC_DOT   , LT(L_MOUSE,KC_SLSH), KC_BSLS,
                     KC_TAB      ,KC_LNG2   , MO(L_SYM)    ,LT(L_NAV,KC_SPC),MO(L_FKEYS)       ,      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , LT(L_SYM,KC_GRAVE)
   ),
 
-  // Layer 1: Base QWERTY (Win) - Alt/Gui swap, RCTL_T(;), layer refs to Win layers
-  [L_WIN_BASE] = LAYOUT_universal(
-    KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
-    LCTL_T(KC_ESC) , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , RCTL_T(KC_QUOT),
-    KC_LSFT        , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , KC_DOT   , LT(L_MOUSE,KC_SLSH), RSFT_T(KC_BSLS),
-                    KC_LGUI     , KC_LALT  , MO(L_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , LT(L_SYM,KC_GRAVE)
-  ),
-
-  // Layer 2: Navigation (Mac/Win shared)
+  // Layer 1: Navigation
   [L_NAV] = LAYOUT_universal(
     _______  , LCTL(KC_UP ), LCTL(KC_DOWN), KC_PGUP  , KC_UP   , KC_F11  ,                        _______ , _______  , _______   , KC_PGUP  , KC_UP     , _______ ,
     _______  , LGUI_T(KC_VOLD), LALT_T(KC_VOLU), LCTL_T(KC_DEL), LSFT_T(KC_RGHT), LALT(KC_ESC), KC_LEFT, RSFT_T(KC_DOWN), RCTL_T(KC_UP), RALT_T(KC_RGHT), _______, _______,
@@ -112,15 +101,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                _______     , _______      , _______  , _______ , _______ ,                        KC_DEL  , _______  , _______   , _______  , _______
   ),
 
-  // Layer 3: F-keys (Mac/Win shared) + DF switch
+  // Layer 2: F-keys
   [L_FKEYS] = LAYOUT_universal(
-    _______  , _______  , _______  , _______      , _______  , _______  ,                             _______  , TD(TD_SS1)   , TD(TD_SS2)   , _______  , DF(L_MAC_BASE)   , DF(L_WIN_BASE)   ,
+    _______  , _______  , _______  , _______      , _______  , _______  ,                             _______  , TD(TD_SS1)   , TD(TD_SS2)   , _______  , _______          , _______          ,
     _______  , KC_F1    , KC_F2    , KC_F3    , KC_F4    , KC_F5    ,                             KC_F6    , KC_F7    , KC_F8    , KC_F9    , KC_F10  , KC_F11  ,
     _______  , _______  , _______  , _______  , LAY_TOG  , _______  ,                             CPI_D100 , CPI_I100 , SCRL_DVD , SCRL_DVI , KBC_SAVE, KC_F12  ,
                _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , KBC_RST
   ),
 
-  // Layer 4: Mouse (shared)
+  // Layer 3: Mouse
   [L_MOUSE] = LAYOUT_universal(
     _______  , _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , _______ , _______ ,
     _______  , _______  , _______  , _______  , _______  , _______  ,                             _______  , _______  , _______  , _______  , _______ , _______ ,
@@ -128,7 +117,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                _______  , _______  , _______  , KC_BTN1  , _______  ,                             _______  , _______  , _______  , _______  , _______
   ),
 
-  // Layer 5: Symbols/Numbers (Mac/Win shared)
+  // Layer 4: Symbols/Numbers
   [L_SYM] = LAYOUT_universal(
     S(KC_GRAVE)         , S(KC_1)  , S(KC_2)  , S(KC_3)   , S(KC_4) , S(KC_5) ,                   S(KC_6)  , S(KC_7)   , S(KC_8) , S(KC_9)  , S(KC_0)  , S(KC_MINS),
     KC_GRAVE            , LGUI_T(KC_1), LALT_T(KC_2), LCTL_T(KC_3), LSFT_T(KC_4), KC_5,          KC_6     , RSFT_T(KC_7), RCTL_T(KC_8), RALT_T(KC_9), RGUI_T(KC_0) , _______,
@@ -169,16 +158,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 }
 
 
-// DF永続化: DF()キーコード押下時にEEPROMへ保存
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // DF(layer) キーコードを検出して永続化
-    if (keycode >= QK_DEF_LAYER && keycode <= QK_DEF_LAYER_MAX) {
-        if (record->event.pressed) {
-            uint8_t layer = keycode & 0x1F;
-            eeconfig_update_default_layer((layer_state_t)1 << layer);
-        }
-    }
-
     switch (keycode) {
         #ifdef LAYER_LED_ENABLE
         case LAY_TOG: toggle_layer_led(record->event.pressed); return true;
@@ -269,14 +249,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
-// DF永続化: 起動時にEEPROMからデフォルトレイヤーを復元
 void keyboard_post_init_user(void) {
-    if (eeconfig_is_enabled()) {
-        layer_state_t dl = eeconfig_read_default_layer();
-        if (dl) {
-            default_layer_set(dl);
-        }
-    }
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     set_auto_mouse_enable(true);
 #endif
