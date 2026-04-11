@@ -90,14 +90,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB         , KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            , KC_EQL,
     KC_ESC         , LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) , KC_QUOT,
     KC_NO          , KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , KC_DOT   , LT(L_MOUSE,KC_SLSH), KC_BSLS,
-                    KC_TAB      ,KC_LNG2   , MO(L_SYM)    ,LT(L_NAV,KC_SPC),MO(L_FKEYS)       ,      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , LT(L_SYM,KC_GRAVE)
+                    KC_TAB      ,KC_LNG1   , MO(L_SYM)    ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , LT(L_SYM,KC_GRAVE)
   ),
 
   // Layer 1: Navigation
   [L_NAV] = LAYOUT_universal(
     _______  , LCTL(KC_UP ), LCTL(KC_DOWN), KC_PGUP  , KC_UP   , KC_F11  ,                        _______ , _______  , _______   , KC_PGUP  , KC_UP     , _______ ,
     _______  , LGUI_T(KC_VOLD), LALT_T(KC_VOLU), LCTL_T(KC_DEL), LSFT_T(KC_RGHT), LALT(KC_ESC), KC_LEFT, RSFT_T(KC_DOWN), RCTL_T(KC_UP), RALT_T(KC_RGHT), _______, _______,
-    _______  , KC_BTN4     , KC_BTN5      , KC_PGDN  , KC_DOWN , KC_LEFT ,                        KC_DOWN , KC_LEFT  , _______   , KC_PGDN  , _______   , _______ ,
+    _______  , KC_BTN4     , KC_BTN5      , KC_PGDN  , KC_DOWN , KC_LEFT ,                        KC_DOWN , _______  , _______   , KC_PGDN  , _______   , _______ ,
                _______     , _______      , _______  , _______ , _______ ,                        KC_DEL  , _______  , _______   , _______  , _______
   ),
 
@@ -166,28 +166,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #ifdef PRECISION_ENABLE
         case PRC_SW:  precision_switch(record->event.pressed); return false;
         #endif
-
-        // Mod-Morph: Shift+LNG2 → LNG1
-        case KC_LNG2: {
-            static bool lng1_registered = false;
-            if (record->event.pressed) {
-                uint8_t mods = get_mods();
-                if (mods & MOD_MASK_SHIFT) {
-                    del_mods(MOD_MASK_SHIFT);
-                    register_code(KC_LNG1);
-                    lng1_registered = true;
-                    set_mods(mods);
-                    return false;
-                }
-            } else {
-                if (lng1_registered) {
-                    unregister_code(KC_LNG1);
-                    lng1_registered = false;
-                    return false;
-                }
-            }
-            return true;
-        }
 
         // Mod-Morph: Shift+Backspace → Delete
         case KC_BSPC: {
