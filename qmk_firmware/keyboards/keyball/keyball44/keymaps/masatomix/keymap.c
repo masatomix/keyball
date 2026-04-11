@@ -205,12 +205,15 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
-// Per-key tapping term: GUI キーは誤爆しやすいため長めに設定 (#736)
+// Per-key tapping term (#736, #780)
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case LGUI_T(KC_A):
         case RGUI_T(KC_SCLN):
             return 300;
+        case LSFT_T(KC_F):  // #780 切り分け: Shift判定高速化
+        case RSFT_T(KC_J):
+            return 70;
         default:
             return TAPPING_TERM;
     }
