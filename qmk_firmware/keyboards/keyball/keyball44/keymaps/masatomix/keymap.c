@@ -211,9 +211,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case LGUI_T(KC_A):
         case RGUI_T(KC_SCLN):
             return 300;
-        case LSFT_T(KC_F):  // #780 切り分け: Shift判定高速化
+        case LSFT_T(KC_F):  // #780 Shift判定高速化
         case RSFT_T(KC_J):
-            return 70;
+            return 170;
         default:
             return TAPPING_TERM;
     }
