@@ -1,0 +1,47 @@
+#ifdef LAYER_LED_ENABLE
+
+#include QMK_KEYBOARD_H
+
+static uint8_t my_latest_val = 0;
+static uint8_t my_latest_hue = 0;
+// static bool    layer_led     = false;
+static bool    layer_led     = true;
+
+// レイヤーごとにLED色変更
+void change_layer_led_color(uint8_t layer_no) {
+    if (!layer_led) {
+        return;
+    }
+
+#ifdef CONSOLE_ENABLE
+    uprintf("layer_no: %u \n", layer_no);
+    uprintf("highest_layer_no: %u \n", get_highest_layer(layer_no));
+#endif
+
+    if (get_highest_layer(layer_no) != L_MOUSE) {
+        my_latest_val = rgblight_get_val();
+        rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 0);
+    } else {
+#ifdef MOUSE_LED_COLOR
+        rgblight_sethsv(MOUSE_LED_COLOR);
+#else
+        rgblight_sethsv(HSV_RED);
+#endif
+    }
+}
+
+// 機能の有効・無効を切り替え
+void toggle_layer_led(bool pressed) {
+    if (!pressed) {
+        return;
+    }
+
+    layer_led = !layer_led;
+    if (layer_led) {
+        my_latest_hue = rgblight_get_hue();
+    } else {
+        rgblight_sethsv(my_latest_hue, rgblight_get_sat(), rgblight_get_val());
+    }
+}
+
+#endif
