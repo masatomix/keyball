@@ -94,7 +94,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_Q       , KC_W     , KC_E     , KC_R      , KC_T ,                       KC_Y     , KC_U     , KC_I     , KC_O     , KC_P            ,
     LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), LT(L_MOUSE,KC_G) ,  KC_H     , RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L), RGUI_T(KC_SCLN) ,
     KC_Z       , KC_X     , KC_C     , KC_V      , KC_B ,                       KC_N     , KC_M     , KC_COMM  , KC_DOT   , LT(L_MOUSE,KC_SLSH),
-    KC_LSFT    , KC_TAB   ,KC_LNG1  , MO(L_SYM) ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , _______           , LT(L_SYM,KC_GRAVE)
+    KC_LSFT    , LALT_T(KC_TAB), LGUI_T(KC_LNG1), MO(L_SYM) ,LT(L_NAV,KC_SPC),LT(L_FKEYS,KC_LNG2),      KC_BSPC,LT(L_NAV,KC_ENT), _______  ,  _______ , _______           , LT(L_SYM,KC_GRAVE)
   ),
 
   // Layer 1: Navigation
@@ -187,11 +187,12 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
-// Per-key tapping term (#736, #780)
+// Per-key tapping term (#736, #780, #857)
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case LGUI_T(KC_A):
         case RGUI_T(KC_SCLN):
+        case LGUI_T(KC_LNG1):  // #857 LNG1 IME 切替の GUI 誤爆防止
             return 300;
         case LSFT_T(KC_F):  // #780 Shift判定高速化
         case RSFT_T(KC_J):
