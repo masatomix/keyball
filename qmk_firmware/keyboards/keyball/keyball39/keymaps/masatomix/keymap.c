@@ -55,6 +55,8 @@ enum {
     TD_CBR,      // 1タップ={ ダブルタップ=}
     TD_BRC,      // 1タップ=[ ダブルタップ=]
     TD_QUO,      // 1タップ=' ダブルタップ=" (#738 5列移行準備)
+    TD_EXLM,     // 1タップ=! ダブルタップ=~ (#937)
+    TD_AT,       // 1タップ=@ ダブルタップ=` (#937)
 };
 
 // Tap Dance スクショ用コールバック
@@ -81,6 +83,8 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_CBR] = ACTION_TAP_DANCE_DOUBLE(S(KC_LBRC), S(KC_RBRC)),   // { }
     [TD_BRC] = ACTION_TAP_DANCE_DOUBLE(KC_LBRC, KC_RBRC),         // [ ]
     [TD_QUO] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, S(KC_QUOT)),     // ' "
+    [TD_EXLM] = ACTION_TAP_DANCE_DOUBLE(S(KC_1), S(KC_GRV)),     // ! ~
+    [TD_AT]   = ACTION_TAP_DANCE_DOUBLE(S(KC_2), KC_GRV),        // @ `
 };
 
 // clang-format off
@@ -123,7 +127,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   // Layer 4: Symbols/Numbers
   [L_SYM] = LAYOUT_universal(
-    S(KC_1)  , S(KC_2)  , S(KC_3)   , S(KC_4) , S(KC_5) ,                   S(KC_6)  , S(KC_7)   , S(KC_8) , S(KC_9)  , S(KC_0)  ,
+    TD(TD_EXLM), TD(TD_AT), S(KC_3) , S(KC_4) , S(KC_5) ,                   S(KC_6)  , S(KC_7)   , S(KC_8) , S(KC_9)  , S(KC_0)  ,
     LGUI_T(KC_1), LALT_T(KC_2), LCTL_T(KC_3), LSFT_T(KC_4), KC_5,          KC_6     , RSFT_T(KC_7), RCTL_T(KC_8), RALT_T(KC_9), RGUI_T(KC_0) ,
     KC_BSLS  ,TD(TD_QUO), TD(TD_PRN), TD(TD_CBR), TD(TD_BRC),                           KC_EQL   , KC_MINS   , _______ , _______  , _______  ,
     _______  , _______  , _______  ,  _______  , _______ , _______,                             _______  , _______   , _______ , _______  , _______, _______
