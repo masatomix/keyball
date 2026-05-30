@@ -34,6 +34,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "precision.c"
 #endif
 
+#include "os_detection.h"
+#include "deferred_exec.h"
+#include "translate_ansi_to_jis.h"
+
+// OS 自動判別フラグ: true=Windows(JIS翻訳), false=Mac/iOS/その他(US素通し) (#1019)
+static bool is_windows = false;
+
+// 接続先 OS を判別して is_windows を設定する deferred コールバック。
+//  - master だけが USB/ホスト情報を持つので master 限定。
+//  - Apple Silicon Mac は OS_IOS と判定されるため OS_MACOS と同一扱い。
+//  - 判定不能(OS_UNSURE)の間は 200ms 後に再試行。
+//  - OS_UNSURE/Linux は US 素通しを既定に（判定失敗でも Mac が壊れない）。
+static uint32_t detect_os_cb(uint32_t trigger_time, void *cb_arg) {
+    if (!is_keyboard_master()) return 0;
+    switch (detected_host_os()) {
+        case OS_WINDOWS:
+            is_windows = true;
+            return 0;
+        case OS_MACOS:
+        case OS_IOS:
+        case OS_LINUX:
+            is_windows = false;
+            return 0;
+        default:  // OS_UNSURE
+            return 200;
+    }
+}
+
+// Tap Dance / LT タップから共有する US->JIS 変換（Windows のときだけ翻訳）(#1019)
+static uint16_t td_kc(uint16_t kc) {
+    return is_windows ? a2j_translate(kc) : kc;
+}
+
 // Combo: J+K → Esc (#738), D+F → Tab (#749) 5列移行準備
 const uint16_t PROGMEM jk_combo[] = {RSFT_T(KC_J), RCTL_T(KC_K), COMBO_END};
 const uint16_t PROGMEM df_combo[] = {LCTL_T(KC_D), LSFT_T(KC_F), COMBO_END};
@@ -76,15 +109,35 @@ void td_ss2_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+// OS 連動の「1タップ=kc1 / 2タップ=kc2」Tap Dance。
+// QMK の tap_dance_pair_* と同じ挙動で、出力時に td_kc() で JIS 変換を挟む (#1019)。
+void td_pair_a2j_each(tap_dance_state_t *state, void *user_data) {
+    tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
+    if (state->count == 2) {
+        register_code16(td_kc(pair->kc2));
+        state->finished = true;
+    }
+}
+void td_pair_a2j_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
+    register_code16(td_kc(state->count == 1 ? pair->kc1 : pair->kc2));
+}
+void td_pair_a2j_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
+    unregister_code16(td_kc(state->count == 1 ? pair->kc1 : pair->kc2));
+}
+#define ACTION_TD_PAIR_A2J(kc1, kc2) \
+    { .fn = {td_pair_a2j_each, td_pair_a2j_finished, td_pair_a2j_reset, NULL}, .user_data = (void *)&((tap_dance_pair_t){kc1, kc2}) }
+
 tap_dance_action_t tap_dance_actions[] = {
     [TD_SS1] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ss1_finished, NULL),
     [TD_SS2] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ss2_finished, NULL),
-    [TD_PRN] = ACTION_TAP_DANCE_DOUBLE(S(KC_9), S(KC_0)),         // ( )
-    [TD_CBR] = ACTION_TAP_DANCE_DOUBLE(S(KC_LBRC), S(KC_RBRC)),   // { }
-    [TD_BRC] = ACTION_TAP_DANCE_DOUBLE(KC_LBRC, KC_RBRC),         // [ ]
-    [TD_QUO] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, S(KC_QUOT)),     // ' "
-    [TD_EXLM] = ACTION_TAP_DANCE_DOUBLE(S(KC_1), S(KC_GRV)),     // ! ~
-    [TD_AT]   = ACTION_TAP_DANCE_DOUBLE(S(KC_2), KC_GRV),        // @ `
+    [TD_PRN] = ACTION_TD_PAIR_A2J(S(KC_9), S(KC_0)),         // ( )
+    [TD_CBR] = ACTION_TD_PAIR_A2J(S(KC_LBRC), S(KC_RBRC)),   // { }
+    [TD_BRC] = ACTION_TD_PAIR_A2J(KC_LBRC, KC_RBRC),         // [ ]
+    [TD_QUO] = ACTION_TD_PAIR_A2J(KC_QUOT, S(KC_QUOT)),      // ' "
+    [TD_EXLM] = ACTION_TD_PAIR_A2J(S(KC_1), S(KC_GRV)),      // ! ~
+    [TD_AT]   = ACTION_TD_PAIR_A2J(S(KC_2), KC_GRV),         // @ `
 };
 
 // clang-format off
@@ -167,6 +220,11 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // Windows(JIS) のときは US->JIS 変換を最優先で適用 (#1019)。
+    // a2j は mod-tap 範囲までの記号キーを翻訳する（LT/TapDance は別途下で対応）。
+    if (is_windows) {
+        if (!process_record_user_a2j(keycode, record)) return false;  // HANDLED
+    }
     switch (keycode) {
         #ifdef LAYER_LED_ENABLE
         case LAY_TOG: toggle_layer_led(record->event.pressed); return true;
@@ -174,6 +232,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #ifdef PRECISION_ENABLE
         case PRC_SW:  precision_switch(record->event.pressed); return false;
         #endif
+
+        // base layer の ` (LT(L_SYM,KC_GRAVE)) のタップを JIS 変換 (#1019)。
+        // a2j は LT 範囲(>QK_MOD_TAP_MAX)を扱わないためここで対応。ホールド(レイヤ)は素通し。
+        case LT(L_SYM, KC_GRAVE):
+            if (is_windows && record->tap.count && record->event.pressed) {
+                tap_code16(a2j_translate(KC_GRV));
+                return false;
+            }
+            break;
 
         default: break;
     }
@@ -223,4 +290,7 @@ void keyboard_post_init_user(void) {
 #endif
     // スクロールスナップのデフォルトを FREE に設定（縦横両方動くように） (#761)
     keyball_set_scrollsnap_mode(KEYBALL_SCROLLSNAP_MODE_FREE);
+
+    // 接続先 OS 判別を開始（USB が落ち着くよう 500ms 後）(#1019)
+    defer_exec(500, detect_os_cb, NULL);
 }
