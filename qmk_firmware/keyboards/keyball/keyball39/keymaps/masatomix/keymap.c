@@ -40,14 +40,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // OS 自動判別フラグ: true=Windows(JIS翻訳), false=Mac/iOS/その他(US素通し) (#1019)
 static bool is_windows = false;
+// 手動トグル(JIS_TOG)が押されたら true。以降 os_detection は is_windows を触らない。
+// os_detection の誤判定(KVM 切替 / Apple Silicon=OS_IOS 等)時に手で正すための保険。
+// セッション内のみ有効（EEPROM 非永続）→ 再起動で os_detection が再判定する。
+static bool manual_override = false;
 
 // 接続先 OS を判別して is_windows を設定する deferred コールバック。
 //  - master だけが USB/ホスト情報を持つので master 限定。
 //  - Apple Silicon Mac は OS_IOS と判定されるため OS_MACOS と同一扱い。
 //  - 判定不能(OS_UNSURE)の間は 200ms 後に再試行。
 //  - OS_UNSURE/Linux は US 素通しを既定に（判定失敗でも Mac が壊れない）。
+//  - 手動トグル後(manual_override)は自動判別を止め、手動値を尊重する。
 static uint32_t detect_os_cb(uint32_t trigger_time, void *cb_arg) {
     if (!is_keyboard_master()) return 0;
+    if (manual_override) return 0;
     switch (detected_host_os()) {
         case OS_WINDOWS:
             is_windows = true;
@@ -78,6 +84,7 @@ combo_t key_combos[] = {
 enum my_keyball_keycodes {
     LAY_TOG = KEYBALL_SAFE_RANGE,
     PRC_SW,                       // Precision モードスイッチ
+    JIS_TOG,                      // JIS/US 手動トグル (os_detection 誤判定のフォールバック) (#1019)
 };
 
 // Tap Dance definitions
@@ -175,7 +182,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   // Layer 2: F-keys
   [L_FKEYS] = LAYOUT_universal(
-    KC_F11   , KC_F12   , _______      , _______  , _______  ,                             _______  , TD(TD_SS1)   , TD(TD_SS2)   , _______  , _______          ,
+    KC_F11   , KC_F12   , JIS_TOG      , _______  , _______  ,                             _______  , TD(TD_SS1)   , TD(TD_SS2)   , _______  , _______          ,
     KC_F1    , KC_F2    , KC_F3    , KC_F4    , KC_F5    ,                             KC_F6    , KC_F7    , KC_F8    , KC_F9    , KC_F10  ,
     _______  , _______  , _______  , LAY_TOG  , _______  ,                             CPI_D100 , CPI_I100 , SCRL_DVD , SCRL_DVI , KBC_SAVE,
     _______  , _______  , _______  , _______  , _______  , _______,                             _______  , _______  , _______  , _______  , _______, KBC_RST
@@ -267,6 +274,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PRC_SW:  precision_switch(record->event.pressed); return false;
         #endif
 
+        // JIS/US 手動トグル (#1019)。os_detection 誤判定時の保険。
+        // is_windows を反転 + manual_override で以降の自動判別を抑止。
+        case JIS_TOG:
+            if (record->event.pressed) {
+                is_windows      = !is_windows;
+                manual_override = true;
+            }
+            return false;
+
         default: break;
     }
     return true;
@@ -280,6 +296,9 @@ void oledkit_render_info_user(void) {
     keyball_oled_render_keyinfo();
     keyball_oled_render_ballinfo();
     keyball_oled_render_layerinfo();
+    // 現在の判別状態 (#1019)。手動トグル時は末尾に * を付けて自動判別停止を示す。
+    oled_write_P(is_windows ? PSTR("JIS") : PSTR("US "), false);
+    oled_write_P(manual_override ? PSTR("*\n") : PSTR("\n"), false);
 }
 #endif
 
