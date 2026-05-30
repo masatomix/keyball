@@ -129,6 +129,17 @@ void td_pair_a2j_reset(tap_dance_state_t *state, void *user_data) {
 #define ACTION_TD_PAIR_A2J(kc1, kc2) \
     { .fn = {td_pair_a2j_each, td_pair_a2j_finished, td_pair_a2j_reset, NULL}, .user_data = (void *)&((tap_dance_pair_t){kc1, kc2}) }
 
+// ── メンテ注意: JIS 自動変換と「直接送出」経路について (#1019/#1024) ───────────
+//  普通の keymap エントリ（素キー / S(KC_n) / Mod-Tap / Layer-Tap）は
+//  process_record_user の P1(a2j)/P2(MT-LT) が「実効キーコード＋実際の修飾」から
+//  自動で US→JIS 変換する。キー配置や種類を変えてもロジック変更は不要。
+//  ただし TapDance コールバックや自前マクロ等で tap_code16()/register_code16() を
+//  使って記号を「直接送出」する経路は process_record_user を通らず a2j が拾えない。
+//  → 記号を出す TapDance/マクロを足す時は必ず td_kc()（=a2j_translate()）で包むこと。
+//     例: 下記 ACTION_TD_PAIR_A2J は td_kc() 経由なので OK。素の
+//     ACTION_TAP_DANCE_DOUBLE で記号を出すと Windows(JIS) で化ける。
+//     スクショ TD(TD_SS1/2) は機能キー(Cmd+Shift+4 等)で記号でないため包む必要なし。
+// ───────────────────────────────────────────────────────────────────────────
 tap_dance_action_t tap_dance_actions[] = {
     [TD_SS1] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ss1_finished, NULL),
     [TD_SS2] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ss2_finished, NULL),
