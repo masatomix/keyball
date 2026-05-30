@@ -64,7 +64,8 @@ static uint16_t pushing_shift_embeded_basic_kc = PUSH_NONE;
 bool process_record_user_a2j(uint16_t kc, keyrecord_t *record) {
     // Mod-Tap / Layer-Tap (>QK_MODS_MAX) は対象外。これらの mod ニブルを
     // QK_MODS_GET_MODS で読むと埋め込み Shift と誤判定し、例えば RSFT_T(KC_7)
-    // のタップが S(KC_7)=& と誤変換される (#1024)。QK_MODS と素のキーのみ扱う。
+    // のタップが S(KC_7)=& と誤変換される (#1024)。QK_MODS と素のキーのみ扱い、
+    // Mod-Tap/Layer-Tap のタップは keymap.c 側(process_record_user)で変換する。
     if (kc > QK_MODS_MAX) return NOT_HANDLED;
 
     uint8_t mods_kc  = QK_MODS_GET_MODS(kc);

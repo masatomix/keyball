@@ -223,7 +223,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // Windows(JIS) のときは US->JIS 変換を最優先で適用 (#1019)。
     // a2j は mod-tap 範囲までの記号キーを翻訳する（LT/TapDance は別途下で対応）。
     if (is_windows) {
+        // 1) 素キー / QK_MODS の記号 (S(KC_n), KC_BSLS, KC_EQL 等) を JIS へ変換。
         if (!process_record_user_a2j(keycode, record)) return false;  // HANDLED
+
+        // 2) Mod-Tap / Layer-Tap の「タップ」が JIS で divergent な記号になる場合を変換。
+        //    a2j は MT/LT (>QK_MODS_MAX) を扱わないためここで対応 (#1024)。
+        //    例: Shift+; → :  /  base の ` → JIS `  /  Shift+` → ~ 。
+        //    タップ確定時(record->tap.count)のみ。ホールド(modifier/レイヤ)は素通し。
+        if (record->event.pressed && record->tap.count &&
+            (IS_QK_MOD_TAP(keycode) || IS_QK_LAYER_TAP(keycode))) {
+            uint8_t  basic = QK_MODS_GET_BASIC_KEYCODE(keycode);
+            uint8_t  mods  = get_mods();
+            uint16_t eff   = (mods & MOD_MASK_SHIFT) ? S(basic) : (uint16_t)basic;
+            uint16_t jis   = a2j_translate(eff);
+            if (jis != eff) {  // divergent な記号のときだけ差し替え
+                if (mods & MOD_MASK_SHIFT) {
+                    del_mods(MOD_MASK_SHIFT);  // JIS 側の Shift 要否は jis 側が内包
+                    tap_code16(jis);
+                    set_mods(mods);
+                } else {
+                    tap_code16(jis);
+                }
+                return false;
+            }
+        }
     }
     switch (keycode) {
         #ifdef LAYER_LED_ENABLE
@@ -232,15 +255,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #ifdef PRECISION_ENABLE
         case PRC_SW:  precision_switch(record->event.pressed); return false;
         #endif
-
-        // base layer の ` (LT(L_SYM,KC_GRAVE)) のタップを JIS 変換 (#1019)。
-        // a2j は LT 範囲(>QK_MOD_TAP_MAX)を扱わないためここで対応。ホールド(レイヤ)は素通し。
-        case LT(L_SYM, KC_GRAVE):
-            if (is_windows && record->tap.count && record->event.pressed) {
-                tap_code16(a2j_translate(KC_GRV));
-                return false;
-            }
-            break;
 
         default: break;
     }
