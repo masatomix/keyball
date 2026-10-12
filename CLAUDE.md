@@ -54,9 +54,9 @@ REPO=$(jq -r '.repository' "$CONFIG_FILE")
 
 #### タスク着手
 
-1. **最初に `/create-branch` スキルを実行してブランチを作成**
+1. **最初に `/start-work`（着手宣言〜worktree 作成〜Claude 起動の一気通貫）または `/create-branch`（worktree 作成のみ）でブランチを作成**
    - ⚠️ `git checkout -b` や `git branch` を直接使用してはならない
-   - 必ず `/create-branch` スキルを使用すること
+   - これらのスキル（start-work / open-worktree / create-branch / merged）は `~/.claude/skills`（個人スキル）から提供される。個人スキルはプロジェクトスキルより優先されるため、本リポジトリ内にはコピーを置かない
 2. worktree 内で作業
 3. 変更をコミット・プッシュ
 4. PR作成（`Closes #番号` を含める → マージ時にIssue自動Close）
