@@ -51,7 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //   0 にすると無効。
 #define QUICK_TAP_TERM 120
 
-#define KEYBALL_CPI_DEFAULT 700 // マウス速度 (default: 700)
+#define KEYBALL_CPI_DEFAULT 600 // マウス速度 (Keyball default: 700 → 600 に変更、task#1194)
 #define KEYBALL_SCROLL_DIV_DEFAULT 6 // スクロール速度 (default: 6)
 
 
