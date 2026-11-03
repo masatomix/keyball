@@ -292,6 +292,16 @@ bool process_achordion(uint16_t keycode, keyrecord_t* record) {
     }
 
     recursively_process_record(record, achordion_state);  // Re-process event.
+#if defined(POINTING_DEVICE_ENABLE) && defined(POINTING_DEVICE_AUTO_MOUSE_ENABLE) && !defined(ACHORDION_HAS_AUTO_MOUSE_KEY_TRACKER)
+    // task#1194: QMK は process_auto_mouse() を process_record_kb() より先に呼ぶため、
+    // 元イベントと上の再投入とで同じ押下が 2 回数えられる。マウスキー (BTN1 等、Keyball の
+    // SCRL_MO 含む) の場合は mouse_key_tracker が +2 / 離して -1 となり +1 が残って
+    // Auto Mouse レイヤーが降りなくなる (Space/M が BTN1 になる症状)。1 回分を打ち消す。
+    // (新しい QMK は get/set_auto_mouse_key_tracker() で退避・復元する。本 fork には無い)
+    if (record->event.pressed && (is_mouse_record_kb(keycode, record) || IS_MOUSEKEY(keycode))) {
+      auto_mouse_keyevent(false);
+    }
+#endif
     return false;  // Block the original event.
   }
 
