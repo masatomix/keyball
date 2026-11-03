@@ -37,6 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "os_detection.h"
 #include "deferred_exec.h"
 #include "translate_ansi_to_jis.h"
+#include "achordion.h"  // #1194: 同手ロールの HRM 誤爆対策 (Chordal Hold 相当)
 
 // OS 自動判別フラグ: true=Windows(JIS翻訳), false=Mac/iOS/その他(US素通し) (#1019)
 static bool is_windows = false;
@@ -238,6 +239,11 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // #1194: Achordion を最初に通す (tap-hold の hold 確定を横取りして同手なら tap に差し替える)
+    if (!process_achordion(keycode, record)) {
+        return false;
+    }
+
     // Windows(JIS) のときは US->JIS 変換を最優先で適用 (#1019)。
     // a2j は mod-tap 範囲までの記号キーを翻訳する（LT/TapDance は別途下で対応）。
     if (is_windows) {
@@ -326,6 +332,42 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         default:
             return false;
     }
+}
+
+// ---- #1194: Achordion (同手ロールの HRM 誤爆対策) ----
+// QMK が tap-hold を「hold」と確定した直後に Achordion が横取りし、次に押されたキーが
+// 同じ手なら tap に差し替える。permissive hold / per-key TAPPING_TERM はそのまま残るため、
+// 反対手コンビ (F=Shift + 右手キー等) の即時判定 (#780) は従来どおり。
+// 対象は home row の Mod-Tap のみ。Layer-Tap と親指行の Mod-Tap は achordion_timeout=0 で
+// 素通し (LT(L_SYM,`)+ボールスクロール、LT(L_MOUSE,G)+左手 BTN 等の同手操作を壊さない)。
+// BMP 版 (vial-qmk PR #11) と同一ロジック。
+
+// LAYOUT_universal の行割当: row 0-3 = 左手 / row 4-7 = 右手 (親指行は row 3 / 7)
+static bool k39_on_left_hand(keypos_t pos) {
+    return pos.row < 4;
+}
+
+uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
+    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
+        return 0;  // Layer-Tap は Achordion 対象外
+    }
+    switch (tap_hold_keycode) {
+        case LALT_T(KC_TAB):   // 親指 L31
+        case LGUI_T(KC_LNG1):  // 親指 L32
+            return 0;          // 親指行の Mod-Tap も対象外
+        default:
+            return 1000;       // Achordion 既定値。この時間までに他キーが無ければ hold 確定
+    }
+}
+
+bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record,
+                     uint16_t other_keycode, keyrecord_t *other_record) {
+    // 反対手なら hold、同手なら tap (Chordal Hold と同じ "opposite hands" ルール)
+    return k39_on_left_hand(tap_hold_record->event.key) != k39_on_left_hand(other_record->event.key);
+}
+
+void matrix_scan_user(void) {
+    achordion_task();  // #1194: Achordion の timeout 処理
 }
 
 void keyboard_post_init_user(void) {

@@ -21,3 +21,6 @@ DEFERRED_EXEC_ENABLE = yes
 
 # US(ANSI) -> JIS host 変換テーブル
 SRC += translate_ansi_to_jis.c
+
+# #1194: Achordion (同手ロールの HRM 誤爆対策、getreuer/qmk-keymap eed64fb 由来)
+SRC += achordion.c
