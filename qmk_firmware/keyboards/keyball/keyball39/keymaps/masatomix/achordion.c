@@ -150,6 +150,36 @@ static void settle_as_tap(void) {
   recursively_process_record(&tap_hold_record, STATE_TAPPING);
 }
 
+#if defined(POINTING_DEVICE_ENABLE) && defined(POINTING_DEVICE_AUTO_MOUSE_ENABLE) && !defined(ACHORDION_HAS_AUTO_MOUSE_KEY_TRACKER)
+// task#1194: process_auto_mouse() (quantum/pointing_device/pointing_device_auto_mouse.c) が
+// 押下で mouse_key_tracker++ する条件を写したもの。本体と同期を保つこと。
+static bool achordion_auto_mouse_counts_press(uint16_t keycode, keyrecord_t* record) {
+  const uint8_t target = get_auto_mouse_layer();
+  switch (keycode) {
+    case KC_LEFT_CTRL ... KC_RIGHT_GUI:
+    case QK_MODS ... QK_MODS_MAX:
+      return false;
+    case QK_MOMENTARY ... QK_MOMENTARY_MAX:            // MO(mouse layer)
+      return QK_MOMENTARY_GET_LAYER(keycode) == target;
+    case QK_LAYER_MOD ... QK_LAYER_MOD_MAX:            // LM(mouse layer, mod)
+      return QK_LAYER_MOD_GET_LAYER(keycode) == target;
+    case QK_LAYER_TAP_TOGGLE ... QK_LAYER_TAP_TOGGLE_MAX:  // TT(mouse layer)
+      return QK_LAYER_TAP_TOGGLE_GET_LAYER(keycode) == target;
+    case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:            // LT(mouse layer, kc) のホールド
+      if (record->tap.count == 0) {
+        return QK_LAYER_TAP_GET_LAYER(keycode) == target;
+      }
+      break;  // タップは default と同じ扱い
+    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+      if (record->tap.count == 0) return false;        // MT のホールドは対象外
+      break;
+    default:
+      break;
+  }
+  return is_mouse_record_kb(keycode, record) || IS_MOUSEKEY(keycode);  // BTN1 等、Keyball の SCRL_MO
+}
+#endif
+
 bool process_achordion(uint16_t keycode, keyrecord_t* record) {
   // Don't process events that Achordion generated.
   if (achordion_state == STATE_RECURSING) {
@@ -294,11 +324,11 @@ bool process_achordion(uint16_t keycode, keyrecord_t* record) {
     recursively_process_record(record, achordion_state);  // Re-process event.
 #if defined(POINTING_DEVICE_ENABLE) && defined(POINTING_DEVICE_AUTO_MOUSE_ENABLE) && !defined(ACHORDION_HAS_AUTO_MOUSE_KEY_TRACKER)
     // task#1194: QMK は process_auto_mouse() を process_record_kb() より先に呼ぶため、
-    // 元イベントと上の再投入とで同じ押下が 2 回数えられる。マウスキー (BTN1 等、Keyball の
-    // SCRL_MO 含む) の場合は mouse_key_tracker が +2 / 離して -1 となり +1 が残って
+    // 元イベントと上の再投入とで同じ押下が 2 回処理される。process_auto_mouse() が
+    // mouse_key_tracker を +1 する押下 (下記) は +2 / 離して -1 となり +1 が残って
     // Auto Mouse レイヤーが降りなくなる (Space/M が BTN1 になる症状)。1 回分を打ち消す。
     // (新しい QMK は get/set_auto_mouse_key_tracker() で退避・復元する。本 fork には無い)
-    if (record->event.pressed && (is_mouse_record_kb(keycode, record) || IS_MOUSEKEY(keycode))) {
+    if (record->event.pressed && achordion_auto_mouse_counts_press(keycode, record)) {
       auto_mouse_keyevent(false);
     }
 #endif
