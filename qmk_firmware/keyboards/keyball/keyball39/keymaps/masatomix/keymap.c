@@ -355,6 +355,11 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
         case LALT_T(KC_TAB):   // 親指 L31
         case LGUI_T(KC_LNG1):  // 親指 L32
             return 0;          // 親指行の Mod-Tap も対象外
+        case LSFT_T(KC_F):
+        case RSFT_T(KC_J):
+            // Shift のみ短縮: 片手 Shift (同手チョード) の待ちを 1000 → 400ms に。
+            // 押下から 400ms 以内の同手キーは従来どおり tap (ji / fa の誤爆対策は維持)。
+            return 400;
         default:
             return 1000;       // Achordion 既定値。この時間までに他キーが無ければ hold 確定
     }
