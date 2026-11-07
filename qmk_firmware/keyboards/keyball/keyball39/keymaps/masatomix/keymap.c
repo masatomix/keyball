@@ -238,9 +238,37 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 }
 
 
+// #1194: Shift 有効中に F/J が hold 判定されたら文字として打つ。
+// F を Shift として押したまま "JIS" と打つと、J→I のロールで J が permissive hold により
+// 右 Shift 判定され J が落ちる。Achordion は同時に 1 つの tap-hold しか追跡しないため、
+// F が hold 確定中 (STATE_HOLDING) の J は保護されない。2 つ目の Shift に意味はないので
+// tap に差し替える (親指 KC_LSFT 押下中や、J 押下中の F も同様)。
+static uint16_t shifted_mt_forced_tap = KC_NO;
+
+static bool process_shifted_mt_as_tap(uint16_t keycode, keyrecord_t *record) {
+    if ((keycode != LSFT_T(KC_F) && keycode != RSFT_T(KC_J)) || record->tap.count != 0) {
+        return true;
+    }
+    if (record->event.pressed) {
+        if (get_mods() & MOD_MASK_SHIFT) {
+            shifted_mt_forced_tap = keycode;
+            register_code(QK_MOD_TAP_GET_TAP_KEYCODE(keycode));
+            return false;
+        }
+    } else if (shifted_mt_forced_tap == keycode) {
+        shifted_mt_forced_tap = KC_NO;
+        unregister_code(QK_MOD_TAP_GET_TAP_KEYCODE(keycode));
+        return false;
+    }
+    return true;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // #1194: Achordion を最初に通す (tap-hold の hold 確定を横取りして同手なら tap に差し替える)
     if (!process_achordion(keycode, record)) {
+        return false;
+    }
+    if (!process_shifted_mt_as_tap(keycode, record)) {
         return false;
     }
 
