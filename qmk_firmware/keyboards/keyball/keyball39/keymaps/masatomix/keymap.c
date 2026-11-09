@@ -371,6 +371,22 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record,
     return k39_on_left_hand(tap_hold_record->event.key) != k39_on_left_hand(other_record->event.key);
 }
 
+// #1194: 2 つ目の tap-hold の追跡引き継ぎ (achordion.c の拡張)。
+// Achordion は本来 1 つの tap-hold しか追跡せず、F=Shift が hold 確定中に来た J の hold は
+// 素通り (QMK 既定の Shift) になる。F 押下中に "JIS" と打つと J→I ロールで J が落ちるのはこれ。
+// 一方 "jbfl" (J+B で B、F+L で L) を速く打つと J を離す前に F が来るが、こちらは F を Shift に
+// したい。両者の違いは「2 つ目のキーの次に押すキーが同手 (JIS→tap) か反対手 (jbfl→hold)」で、
+// Achordion のルールそのものなので、2 つ目も追跡対象にして同じルールで判定する。
+// 対象は両方が Shift の Mod-Tap (F/J) のときだけ。Ctrl/GUI/Alt が 1 つ目のときは引き継がず
+// 従来どおり素通り (Ctrl+Shift+T / Cmd+Shift+S など同手 3 キーのショートカットを壊さない)。
+static bool is_shift_mod_tap(uint16_t keycode) {
+    return IS_QK_MOD_TAP(keycode) && (QK_MOD_TAP_GET_MODS(keycode) & 0x0F) == MOD_LSFT;
+}
+
+bool achordion_track_nested(uint16_t active_keycode, uint16_t next_keycode) {
+    return is_shift_mod_tap(active_keycode) && is_shift_mod_tap(next_keycode);
+}
+
 void matrix_scan_user(void) {
     achordion_task();  // #1194: Achordion の timeout 処理
 }
