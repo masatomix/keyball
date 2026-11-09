@@ -238,41 +238,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 }
 
 
-// #1194: Shift 有効中に F/J が hold 判定されたら文字として打つ。
-// F を Shift として押したまま "JIS" と打つと、J→I のロールで J が permissive hold により
-// 右 Shift 判定され J が落ちる。Achordion は同時に 1 つの tap-hold しか追跡しないため、
-// F が hold 確定中 (STATE_HOLDING) の J は保護されない。そこで文字を打ちつつ、押している間は
-// 自分の Shift も保持する (親指 KC_LSFT 押下中や、J 押下中の F も同様)。
-// Shift 保持も行うのは、J 押下中に B→F→L と速く打つと L の前に J を離してしまい、文字 F だけだと
-// L が小文字になる (BFl) ため。従来どおり F が Shift を引き継げば BFL になる。
-static uint16_t shifted_mt_forced_tap = KC_NO;
-
-static bool process_shifted_mt_as_tap(uint16_t keycode, keyrecord_t *record) {
-    if ((keycode != LSFT_T(KC_F) && keycode != RSFT_T(KC_J)) || record->tap.count != 0) {
-        return true;
-    }
-    if (record->event.pressed) {
-        if (get_mods() & MOD_MASK_SHIFT) {
-            shifted_mt_forced_tap = keycode;
-            register_code(QK_MOD_TAP_GET_TAP_KEYCODE(keycode));  // 文字 (既存の Shift で大文字)
-            register_mods(keycode == LSFT_T(KC_F) ? MOD_BIT(KC_LSFT) : MOD_BIT(KC_RSFT));  // Shift 引き継ぎ
-            return false;
-        }
-    } else if (shifted_mt_forced_tap == keycode) {
-        shifted_mt_forced_tap = KC_NO;
-        unregister_code(QK_MOD_TAP_GET_TAP_KEYCODE(keycode));
-        unregister_mods(keycode == LSFT_T(KC_F) ? MOD_BIT(KC_LSFT) : MOD_BIT(KC_RSFT));
-        return false;
-    }
-    return true;
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // #1194: Achordion を最初に通す (tap-hold の hold 確定を横取りして同手なら tap に差し替える)
     if (!process_achordion(keycode, record)) {
-        return false;
-    }
-    if (!process_shifted_mt_as_tap(keycode, record)) {
         return false;
     }
 
@@ -401,6 +369,22 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record,
                      uint16_t other_keycode, keyrecord_t *other_record) {
     // 反対手なら hold、同手なら tap (Chordal Hold と同じ "opposite hands" ルール)
     return k39_on_left_hand(tap_hold_record->event.key) != k39_on_left_hand(other_record->event.key);
+}
+
+// #1194: 2 つ目の tap-hold の追跡引き継ぎ (achordion.c の拡張)。
+// Achordion は本来 1 つの tap-hold しか追跡せず、F=Shift が hold 確定中に来た J の hold は
+// 素通り (QMK 既定の Shift) になる。F 押下中に "JIS" と打つと J→I ロールで J が落ちるのはこれ。
+// 一方 "jbfl" (J+B で B、F+L で L) を速く打つと J を離す前に F が来るが、こちらは F を Shift に
+// したい。両者の違いは「2 つ目のキーの次に押すキーが同手 (JIS→tap) か反対手 (jbfl→hold)」で、
+// Achordion のルールそのものなので、2 つ目も追跡対象にして同じルールで判定する。
+// 対象は両方が Shift の Mod-Tap (F/J) のときだけ。Ctrl/GUI/Alt が 1 つ目のときは引き継がず
+// 従来どおり素通り (Ctrl+Shift+T / Cmd+Shift+S など同手 3 キーのショートカットを壊さない)。
+static bool is_shift_mod_tap(uint16_t keycode) {
+    return IS_QK_MOD_TAP(keycode) && (QK_MOD_TAP_GET_MODS(keycode) & 0x0F) == MOD_LSFT;
+}
+
+bool achordion_track_nested(uint16_t active_keycode, uint16_t next_keycode) {
+    return is_shift_mod_tap(active_keycode) && is_shift_mod_tap(next_keycode);
 }
 
 void matrix_scan_user(void) {
