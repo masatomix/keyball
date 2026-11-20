@@ -180,6 +180,37 @@ static bool achordion_auto_mouse_counts_press(uint16_t keycode, keyrecord_t* rec
 }
 #endif
 
+// Starts tracking `keycode` as the active tap-hold key (state UNSETTLED) and
+// applies eager mods if applicable.
+static void start_tracking(uint16_t keycode, keyrecord_t* record,
+                           uint16_t timeout) {
+  achordion_state = STATE_UNSETTLED;
+  // Save info about this key.
+  tap_hold_keycode = keycode;
+  tap_hold_record = *record;
+  hold_timer = record->event.time + timeout;
+  pressed_another_key_before_release = false;
+  eager_mods = 0;
+
+  if (IS_QK_MOD_TAP(keycode)) {  // Apply mods immediately if they are "eager."
+    const uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(keycode));
+    if (
+#if defined(CAPS_WORD_ENABLE)
+        // Since eager mods bypass normal event handling, Caps Word does
+        // not work as expected with eager Shift. So we don't apply Shift
+        // eagerly while Caps Word is on.
+        !(is_caps_word_on() && (mod & MOD_LSFT) != 0) &&
+#endif  // defined(CAPS_WORD_ENABLE)
+        achordion_eager_mod(mod)) {
+      eager_mods = mod;
+      process_eager_mods_action();
+    }
+  }
+
+  dprintf("Achordion: Key 0x%04X pressed.%s\n", keycode,
+          eager_mods ? " Set eager mods." : "");
+}
+
 bool process_achordion(uint16_t keycode, keyrecord_t* record) {
   // Don't process events that Achordion generated.
   if (achordion_state == STATE_RECURSING) {
@@ -199,31 +230,7 @@ bool process_achordion(uint16_t keycode, keyrecord_t* record) {
       // A tap-hold key is pressed and considered by QMK as "held".
       const uint16_t timeout = achordion_timeout(keycode);
       if (timeout > 0) {
-        achordion_state = STATE_UNSETTLED;
-        // Save info about this key.
-        tap_hold_keycode = keycode;
-        tap_hold_record = *record;
-        hold_timer = record->event.time + timeout;
-        pressed_another_key_before_release = false;
-        eager_mods = 0;
-
-        if (is_mt) {  // Apply mods immediately if they are "eager."
-          const uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(keycode));
-          if (
-#if defined(CAPS_WORD_ENABLE)
-              // Since eager mods bypass normal event handling, Caps Word does
-              // not work as expected with eager Shift. So we don't apply Shift
-              // eagerly while Caps Word is on.
-              !(is_caps_word_on() && (mod & MOD_LSFT) != 0) &&
-#endif  // defined(CAPS_WORD_ENABLE)
-              achordion_eager_mod(mod)) {
-            eager_mods = mod;
-            process_eager_mods_action();
-          }
-        }
-
-        dprintf("Achordion: Key 0x%04X pressed.%s\n", keycode,
-                eager_mods ? " Set eager mods." : "");
+        start_tracking(keycode, record, timeout);
         return false;  // Skip default handling.
       }
     }
@@ -235,6 +242,27 @@ bool process_achordion(uint16_t keycode, keyrecord_t* record) {
   } else if (record->event.pressed && tap_hold_keycode != keycode) {
     // Track whether another key was pressed while using a tap-hold key.
     pressed_another_key_before_release = true;
+  }
+
+  // task#1194: Nested tap-hold. Another tap-hold key is pressed and considered
+  // held by QMK while the active key is held (or still unsettled). Normally the
+  // new key would fall through to QMK's default hold handling. When
+  // `achordion_track_nested()` allows it, settle the active key as held (if it
+  // is not yet) and hand tracking over to the new key, so the same-hand /
+  // opposite-hand rule also applies to it. The previous key's release then
+  // goes through default handling, which unregisters its mods.
+  if (is_tap_hold && record->tap.count == 0 && record->event.pressed &&
+      is_key_event && keycode != tap_hold_keycode &&
+      achordion_track_nested(tap_hold_keycode, keycode)) {
+    const uint16_t timeout = achordion_timeout(keycode);
+    if (timeout > 0) {
+      if (achordion_state == STATE_UNSETTLED) {
+        settle_as_hold();
+      }
+      dprintf("Achordion: Nested tap-hold 0x%04X, handing over.\n", keycode);
+      start_tracking(keycode, record, timeout);
+      return false;  // Skip default handling.
+    }
   }
 
   // Release of the active tap-hold key.
@@ -388,6 +416,12 @@ __attribute__((weak)) uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
 }
 
 // By default, Shift and Ctrl mods are eager, and Alt and GUI are not.
+// By default, never track a nested tap-hold (original Achordion behavior).
+__attribute__((weak)) bool achordion_track_nested(uint16_t active_keycode,
+                                                  uint16_t next_keycode) {
+  return false;
+}
+
 __attribute__((weak)) bool achordion_eager_mod(uint8_t mod) {
   return (mod & (MOD_LALT | MOD_LGUI)) == 0;
 }

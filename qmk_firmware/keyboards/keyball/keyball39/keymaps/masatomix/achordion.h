@@ -150,6 +150,13 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode);
 bool achordion_eager_mod(uint8_t mod);
 
 /**
+ * task#1194: Optional callback to allow tracking a second tap-hold key that is
+ * pressed (and considered held by QMK) while `active_keycode` is active.
+ * Return true to hand tracking over to `next_keycode`. Default: false.
+ */
+bool achordion_track_nested(uint16_t active_keycode, uint16_t next_keycode);
+
+/**
  * Returns true if the args come from keys on opposite hands.
  *
  * @param tap_hold_record keyrecord_t from the tap-hold key's event.
