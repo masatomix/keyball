@@ -74,12 +74,17 @@ static uint16_t td_kc(uint16_t kc) {
     return is_windows ? a2j_translate(kc) : kc;
 }
 
-// Combo: J+K → Esc (#738), D+F → Tab (#749) 5列移行準備
+// Combo: J+K → Esc (#738), D+F → Tab (#749) 5列移行準備, F+/ → ? (task#1271)
 const uint16_t PROGMEM jk_combo[] = {RSFT_T(KC_J), RCTL_T(KC_K), COMBO_END};
 const uint16_t PROGMEM df_combo[] = {LCTL_T(KC_D), LSFT_T(KC_F), COMBO_END};
+// F+/ → ? (task#1271): Shift(F) を / より先に離すと F/J の Mod-Tap が tap になり
+// 「f/」になる (JIS では「f・」)。2 キーを COMBO_TERM (既定 50ms) 以内に押したら ? を出す。
+// 副作用: 50ms 以内に f→/ と打つと ? になる (英文で f/ はまず出ない)。ZMK 版 keyball39_dash#115 と同じ。
+const uint16_t PROGMEM fslsh_combo[] = {LSFT_T(KC_F), LT(L_MOUSE,KC_SLSH), COMBO_END};
 combo_t key_combos[] = {
     COMBO(jk_combo, KC_ESC),
     COMBO(df_combo, KC_TAB),
+    COMBO(fslsh_combo, S(KC_SLSH)),
 };
 
 enum my_keyball_keycodes {
